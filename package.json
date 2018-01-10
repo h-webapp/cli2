@@ -1,0 +1,23 @@
+{
+  "name": "h-application",
+  "version": "2.0.1",
+  "description": "web,web-application,application,module,web-module",
+  "bin": "./bin/h-application.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h-webapp/cli.git"
+  },
+  "author": "kouyjes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/h-webapp/cli/issues"
+  },
+  "homepage": "https://github.com/h-webapp/cli#readme",
+  "devDependencies": {}
+}

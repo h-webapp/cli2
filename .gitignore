@@ -1,0 +1,7 @@
+/.idea
+/node_modules
+/build
+/template/node_modules
+/template/release
+/template/develop
+/vue-template/node_modules
