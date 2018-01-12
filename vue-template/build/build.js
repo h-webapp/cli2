@@ -5,7 +5,7 @@ module.exports = {
         {
             template:path.resolve(srcDir,'index.html'),
             templateFileName:'index.html',
-            envConfig:require(path.resolve(srcDir,'env/applications.json')),
+            envConfig:path.resolve(srcDir,'env/applications.json'),
             output:{
                 filename:'[name].js',
                 path:path.resolve(srcDir,'chunks'),
@@ -15,7 +15,7 @@ module.exports = {
         {
             template:path.resolve(srcDir,'login/login.html'),
             templateFileName:'login.html',
-            envConfig:require(path.resolve(srcDir,'env/applications.json')),
+            envConfig:path.resolve(srcDir,'env/login_applications.json'),
             output:{
                 filename:'[name].js',
                 path:path.resolve(srcDir,'chunks/login'),

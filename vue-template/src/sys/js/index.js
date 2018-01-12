@@ -16,7 +16,7 @@
         var define;
         if((define = program.contentWindow) && (define = define.HERE) && (define = define.FRAMEWORK)){
             try{
-                define = define.define;
+                define = define.constant;
                 if(define && define('main')){
                     programLoaded();
                     return;

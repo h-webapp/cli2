@@ -26,11 +26,11 @@ var config = {
             proxy:proxy,
             docBase:[
                 {
-                    path:'/cc',
+                    path:'/',
                     dir:dir
                 },
                 {
-                    path:'/cc/node_modules',
+                    path:'/node_modules',
                     dir:nodeResource
                 },
                 {

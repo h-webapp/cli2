@@ -1,4 +1,4 @@
-(function (define,ResourceLoader,Register,Module) {
+(function (define,ResourceLoader,Register,Module,Application) {
     var body = document.body;
     var loadingTimeout,loadingCount = 0;
     function isResource(data){
@@ -14,7 +14,7 @@
             clearTimeout(loadingTimeout);
         }
         loadingTimeout = setTimeout(function () {
-            body.setAttribute('loading-resource',true);
+            body.setAttribute('loading-resource','true');
         },deferTime);
     });
     ResourceLoader.addEventListener('loadFinished', function (e) {
@@ -25,35 +25,10 @@
         if(loadingCount === 0){
             clearTimeout(loadingTimeout);
             loadingTimeout = setTimeout(function () {
-                body.setAttribute('loading-resource',false);
+                body.setAttribute('loading-resource','false');
             },deferTime);
         }
     });
-    var configPath = 'env/applications.json';
-    var register = Register.getInstance();
-    ResourceLoader.load({
-        type:'json',
-        urls:[configPath]
-    }).then(function (dataArray) {
-        var data = dataArray[0];
-        register.setNeedLoad(!data.release || !data.concat);
-        register.apps(data.apps);
-        register.modules(data.modules);
-        Promise.all([register.register(), ResourceLoader.load({
-            type:'js',
-            urls:[data.main]
-        })]).then(function () {
-            var init = define('init');
-            if(typeof init === 'function'){
-                init();
-            }
-            initEnvironment(data);
-        });
-    });
-    function initEnvironment(data){
-        var environment = Module.module('env').getService('environment');
-        environment.updateEnvironment(data);
-    }
     function preLoad(){
         var slice = Array.prototype.slice;
         var resources = slice.call(document.querySelectorAll('resource[pre-url]'));
@@ -89,6 +64,7 @@
             resource[type].push(src);
             removeNode(el);
         });
+
         ResourceLoader.load([
             {
                 type:'js',
@@ -101,4 +77,35 @@
         ]);
     }
     setTimeout(preLoad);
-})(HERE.FRAMEWORK.define,HERE.FRAMEWORK.ResourceLoader,HERE.FRAMEWORK.Register,HERE.FRAMEWORK.Module);
+    function dirName(file) {
+        var index = file.lastIndexOf('/');
+        return file.substring(0,index);
+    }
+    function initModuleLoaderBaseURI(modules) {
+        modules.forEach(function (module) {
+            Module.module(module.name).loader().baseURI(dirName(module.url));
+        });
+    }
+    function initApplicationLoaderBaseURI(apps) {
+        apps.forEach(function (app) {
+            Application.app(app.name).loader().baseURI(dirName(app.url));
+        });
+    }
+    function LoadEnvironment(configPath) {
+        var register = Register.getInstance();
+        ResourceLoader.load({
+            type:'json',
+            urls:[configPath]
+        }).then(function (dataArray) {
+            var data = dataArray[0];
+            initModuleLoaderBaseURI(data.modules);
+            initApplicationLoaderBaseURI(data.apps);
+
+            var main = define('main');
+            if(typeof main === 'function'){
+                main(data);
+            }
+        });
+    };
+    define('LoadEnvironment',LoadEnvironment);
+})(HERE.FRAMEWORK.constant,HERE.FRAMEWORK.ResourceLoader,HERE.FRAMEWORK.Register,HERE.FRAMEWORK.Module,HERE.FRAMEWORK.Application);

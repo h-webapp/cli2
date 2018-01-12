@@ -2,15 +2,27 @@ const path = require('path');
 const srcDir = path.resolve(__dirname,'../src')
 const Constant = require('./constant');
 const buildConfig = require('./build');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 var wpkBaseConfig = require('./webpack.conf');
+function ensureArray(arr) {
+    if(!arr){
+        return [];
+    }
+    if(!(arr instanceof Array)){
+        arr = [].concat(arr);
+    }
+    return arr;
+}
 var webpackConfigs = buildConfig.pages.map(function (page) {
-    var template = page.template;
-    var envConfig = page.envConfig;
+    var envConfig = require(page.envConfig);
 
     var apps = envConfig.apps,modules = envConfig.modules;
-    var main = envConfig.main;
+    var main = ensureArray(envConfig.main).map(function (file) {
+        return path.resolve(srcDir,file);
+    });
+    var init = ensureArray(envConfig.init).map(function (file) {
+        return path.resolve(srcDir,file);
+    });
     var entry = {};
     var resources = [];
 
@@ -20,18 +32,24 @@ var webpackConfigs = buildConfig.pages.map(function (page) {
     apps.forEach(function (app) {
         resources.push(path.resolve(srcDir,app.url));
     });
+    resources = resources.concat(main);
 
-    resources.push(path.resolve(srcDir,main));
+
     entry[Constant.SYSTEM_MAIN] = resources;
+    if(init.length > 0){
+        entry[Constant.SYSTEM_INIT] = init;
+    }
 
     var plugins = [].concat(wpkBaseConfig.plugins);
-    var htmlOptions = {
-        template:template
-    };
-    if(page.templateFileName){
-        htmlOptions.filename = page.templateFileName;
+
+    if(page.template){
+        plugins.push(new HtmlWebpackPlugin({
+            template:page.template,
+            filename:page.templateFileName,
+
+        }));
     }
-    plugins.push(new HtmlWebpackPlugin(htmlOptions));
+
     return {
         context:wpkBaseConfig.context,
         module:wpkBaseConfig.module,

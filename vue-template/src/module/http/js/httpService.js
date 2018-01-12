@@ -1,5 +1,6 @@
-(function ($,Module) {
+(function (Module) {
     Module.module('http').service('httpService', ['environment',function (environment) {
+        var $ = jQuery;
         var pathParamReg = new RegExp('\{([^/{}]+)\}','g');
         function ensureStartsWith(url){
             if(!url){
@@ -10,6 +11,51 @@
             }
             return url;
         }
+        var eventListeners = {
+            beforeSend:[],
+            complete:[],
+            error:[]
+        };
+        this.addEventListener = function (type,handler) {
+            if(typeof handler !== 'function'){
+                return;
+            }
+            var listeners = eventListeners[type];
+            if(!listeners){
+                return;
+            }
+            var index = listeners.indexOf(handler);
+            if(index === -1){
+                listeners.push(handler);
+            }
+        };
+        this.removeEventListener = function (type,handler) {
+            var listeners = eventListeners[type];
+            if(!listeners){
+                return;
+            }
+            if(arguments.length === 1){
+                listeners.length = 0;
+                return;
+            }
+            var index = listeners.indexOf(handler);
+            if(handler.length >= 0){
+                listeners.splice(index,1);
+            }
+        };
+        this.executeEventHandler = function (type,params,context) {
+            var listeners = eventListeners[type];
+            if(!listeners){
+                return;
+            }
+            listeners.forEach(function (handler) {
+                try{
+                    handler.apply(context,params);
+                }catch(e){
+                    console.error(e);
+                }
+            });
+        };
         this.getRequestUrl = function (url,pathParams,queryParams) {
             var apiPrefix = environment.attr('apiPrefix');
             apiPrefix = ensureStartsWith(apiPrefix);
@@ -66,11 +112,25 @@
                 url:url,
                 cache:false,
                 async:async,
+                beforeSend: function () {
+                    this.executeEventHandler('beforeSend',arguments,this);
+                }.bind(this),
+                complete: function () {
+                    this.executeEventHandler('complete',arguments,this);
+                }.bind(this),
+                error: function () {
+                    this.executeEventHandler('error',arguments,this);
+                }.bind(this),
                 headers:request.headers,
                 dataType:request.dataType,
                 contentType:request.contentType,
                 data:data
-            });
+            }).then(function (data) {
+                return data;
+            }, function (data) {
+                this.executeEventHandler('error',arguments,this);
+                throw data;
+            }.bind(this));
         };
         this.get = function (url,pathParams,queryParams) {
             var request = {
@@ -115,4 +175,4 @@
             return this.request(request);
         };
     }]);
-})(jQuery,HERE.FRAMEWORK.Module);
+})(HERE.FRAMEWORK.Module);

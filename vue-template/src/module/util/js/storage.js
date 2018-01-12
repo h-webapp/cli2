@@ -1,5 +1,6 @@
 (function (Module) {
     Module.module('util').service('appSession', function () {
+        var PREFIX = 'session.';
         var LZString = window['LZString'];
         var isIE = /\bedge\/\d+\.\d+/i.test(navigator.appVersion);
         function compress(text){
@@ -17,7 +18,19 @@
         this.getStorage = function () {
             return localStorage;
         };
+        this.remove = function (key) {
+            var storage = this.getStorage();
+            storage.removeItem(key);
+        };
+        this.clear = function () {
+            var storage = this.getStorage();
+            storage.clear();
+        };
+        this.key = function (key) {
+            return PREFIX + key;
+        };
         this.string = function (key,value) {
+            key = PREFIX + key;
             var storage = this.getStorage();
             try{
                 if(arguments.length === 1){

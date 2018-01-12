@@ -1,9 +1,6 @@
-import Application from 'webapp-core';
+var Application = HERE.FRAMEWORK.Application;
 Application.app('test-app').service('caseService',function () {
     this.getCase = function () {
-        console.log('test');
+        console.log('test1');
     }
 });
-export default function () {
-    return Application.app('test-app');
-}

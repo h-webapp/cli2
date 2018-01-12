@@ -10,8 +10,9 @@ function reStartServer(){
 }
 reStartServer();
 var dirName = path.resolve(__dirname,'../mock');
+var buildDir = path.resolve(__dirname,'../build');
+var serverConfDir = path.resolve(__dirname,'../server');
 const watch = require('watch');
-watch.watchTree(dirName, function () {
-    console.log(reStartServer);
-    reStartServer();
-});
+watch.watchTree(dirName, reStartServer);
+watch.watchTree(buildDir, reStartServer);
+watch.watchTree(serverConfDir, reStartServer);

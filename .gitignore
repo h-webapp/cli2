@@ -5,3 +5,4 @@
 /template/release
 /template/develop
 /vue-template/node_modules
+/vue-template/src/chunks

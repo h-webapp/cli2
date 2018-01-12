@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const Constant = require('./constant');
 const srcDir = path.resolve(__dirname,'../src');
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 module.exports = {
     context:__dirname + '/src',
     module:{
@@ -10,7 +11,8 @@ module.exports = {
                 test:/\.css$/,
                 use:[
                     'style-loader',
-                    'css-loader'
+                    'css-loader',
+
                 ]
             },
             {
@@ -31,7 +33,11 @@ module.exports = {
     },
     plugins:[
         new webpack.optimize.CommonsChunkPlugin({
-            name: Constant.SYSTEM_INIT
+            name: Constant.SYSTEM_COMMON
+        }),
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new ExtractTextPlugin({
+            filename: 'css/[name].css'
         })
     ]
 };

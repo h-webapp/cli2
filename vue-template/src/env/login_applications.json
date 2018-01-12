@@ -18,11 +18,11 @@
     {"name":"menu","url":"app/menu/index.js"},
     {"name":"browse","url":"app/browse/index.js"},
     {"name":"info-dialog","url":"app/info-dialog/index.js"},
-    {"name":"test-app","url":"app/test/index.js"}
+    {"name":"test","url":"app/test/index.js"}
   ],
   "init":[],
-  "main":["env/environment.js","main/index.js","index.js"],
+  "main":["env/environment.js","main/index.js","login/login.js"],
   "attributes":{
-    "apiPrefix":"/api"
+    "apiPrefix":"api"
   }
 }
