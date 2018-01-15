@@ -1,6 +1,3 @@
-
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-
 function createLoaders(type,options) {
     options = options || {}
     var cssLoader = {
@@ -19,21 +16,16 @@ function createLoaders(type,options) {
             })
         });
     }
-    if(options['extract']){
-        return ExtractTextPlugin.extract({
-            use: loaders,
-            fallback: 'vue-style-loader'
-        });
-    }
-    loaders.push('vue-style-loader');
     return loaders;
 }
-function cssLoaders() {
 
-    var options = {}
+function cssLoaders(options) {
+
+    options = options || {}
 
     return {
         css: createLoaders('',options),
+        postcss: createLoaders('',options),
         less: createLoaders('less',options),
         sass: createLoaders('sass', Object.assign({indentedSyntax: true},options)),
         scss: createLoaders('sass',options),
@@ -42,7 +34,9 @@ function cssLoaders() {
     }
 }
 
-function styleLoaders(options) {
+function styleLoaders() {
+
+    var options = {};
     var output = []
     var loaders = cssLoaders(options)
     for (var extension in loaders) {
@@ -55,8 +49,4 @@ function styleLoaders(options) {
     return output
 }
 
-exports.loaders = {
-    test: /\.vue$/,
-    loader: 'vue-loader',
-    options: cssLoaders()
-};
+exports.loaders = styleLoaders();

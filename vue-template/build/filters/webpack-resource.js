@@ -1,23 +1,7 @@
-const Constant = require('../constant');
-const webpack = require('webpack');
-const MemoryFS = require("memory-fs");
 const path = require('path');
-//const fs = new MemoryFS();
 const fs = require('fs');
 const srcDir = path.resolve(__dirname,'../../src');
-var config = require('../../build/webpack.dev.config.js');
 const MIME = require('mime');
-const compiler = webpack(config);
-//compiler.outputFileSystem = fs;
-compiler.run(function (err) {
-    if(!err){
-        compiler.watch({},function () {
-
-
-        });
-    }
-});
-
 var buildConfig = require('../build');
 var appConfigMap = {};
 var templateMap = {};
@@ -106,5 +90,5 @@ function execute(chain,request,response) {
     output(chain,request,response);
 
 }
-execute.priority = -1;
+execute.priority = -2;
 exports.execute = execute;

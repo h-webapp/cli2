@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style  scoped>
 a {
     color: #42b983;
 }

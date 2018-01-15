@@ -1,10 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
+var merge = require('webpack-merge')
 const Constant = require('./constant');
 const srcDir = path.resolve(__dirname,'../src');
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-module.exports = function () {
-    var baseConfig = {
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+
+
+function baseConfig() {
+    var _baseConfig = {
         context:__dirname + '/src',
         resolve: {
             extensions: ['.js', '.vue', '.json'],
@@ -24,7 +28,7 @@ module.exports = function () {
 
                     ]
                 },
-                require('./vue-loader-option').loaders,
+                require('./vue-loader').loader,
                 {
                     test: /\.js$/,
                     loader: 'babel-loader',
@@ -48,8 +52,20 @@ module.exports = function () {
             new webpack.optimize.ModuleConcatenationPlugin(),
             new ExtractTextPlugin({
                 filename: 'css/[name].css'
-            })
+            }),
+            new webpack.HotModuleReplacementPlugin(),
+            new webpack.NoEmitOnErrorsPlugin(),
+            new FriendlyErrorsPlugin()
         ]
     };
-    return baseConfig;
+    return _baseConfig;
+}
+
+module.exports = function(){
+   var config = baseConfig();
+   return merge(config,{
+       module: {
+           rules: require('./css-loader').loaders
+       }
+   });
 };
