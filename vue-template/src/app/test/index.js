@@ -1,8 +1,8 @@
-import './css/test.css';
-var Application = HERE.FRAMEWORK.Application;
+import { Application } from 'webapp-core';
+import TestComp from './js/test';
 Application.app('test-app',function () {
-    import('./js/test.js').then(function () {
-        var tec = 'testImport';
-
-    });
+    this.route = {
+        path:'/test',
+        component:TestComp
+    };
 });

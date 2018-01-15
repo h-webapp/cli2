@@ -310,4 +310,4 @@
         };
         app.component('mg-table',def);
     });
-})(HERE.FRAMEWORK.Application);
+})(Application);

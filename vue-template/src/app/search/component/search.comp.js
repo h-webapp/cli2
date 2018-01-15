@@ -4,7 +4,7 @@
         var loginService = app.getService('loginService');
         var userService = app.getService('userService');
         var env = app.getService('environment');
-        Vue.component('search-comp',{
+        Application.component('search-comp',{
             template:'<div><span>{{welcome}}</span>:<span>search app,current user:{{loginInfo.userName}}</span>' +
             '<ul><li v-for="(value,key) in attributes">{{key}}:{{value}}</li></ul></div>',
             data: function () {

@@ -1,5 +1,5 @@
 (function (Application) {
-    Vue.component('browse-comp',{
+    Application.component('browse-comp',{
         template:'<span>浏览页面</span>'
     });
 

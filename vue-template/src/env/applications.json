@@ -20,8 +20,8 @@
     {"name":"info-dialog","url":"app/info-dialog/index.js"},
     {"name":"test-app","url":"app/test/index.js"}
   ],
-  "init":[],
-  "main":["env/environment.js","main/index.js","index.js"],
+  "init":["env/init/index.js"],
+  "main":["index.js"],
   "attributes":{
     "apiPrefix":"/api"
   }
