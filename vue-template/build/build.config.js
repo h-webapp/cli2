@@ -11,7 +11,7 @@ module.exports = {
                 path:path.resolve(srcDir,'chunks'),
                 publicPath:'chunks/'
             }
-        },
+        }/*,
         {
             template:path.resolve(srcDir,'login/login.html'),
             templateFileName:'login.html',
@@ -21,6 +21,6 @@ module.exports = {
                 path:path.resolve(srcDir,'chunks/login'),
                 publicPath:'chunks/login/'
             }
-        }
+        }*/
     ]
 };

@@ -4,8 +4,6 @@ var merge = require('webpack-merge')
 const Constant = require('./constant');
 const srcDir = path.resolve(__dirname,'../src');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-
 
 function baseConfig() {
     var _baseConfig = {
@@ -52,10 +50,8 @@ function baseConfig() {
             new webpack.optimize.ModuleConcatenationPlugin(),
             new ExtractTextPlugin({
                 filename: 'css/[name].css'
-            }),
-            new webpack.HotModuleReplacementPlugin(),
-            new webpack.NoEmitOnErrorsPlugin(),
-            new FriendlyErrorsPlugin()
+            })
+
         ]
     };
     return _baseConfig;

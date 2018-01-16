@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const srcDir = path.resolve(__dirname,'../../src');
 const MIME = require('mime');
-var buildConfig = require('../build');
+var buildConfig = require('../build.config');
 var appConfigMap = {};
 var templateMap = {};
 buildConfig.pages.forEach(function (page) {

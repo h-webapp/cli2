@@ -1,3 +1,4 @@
+
 var config = require('../../build/webpack.dev.config.js');
 const webpack = require('webpack');
 const MemoryFS = require("memory-fs");
@@ -6,8 +7,9 @@ const compiler = webpack(config);
 //compiler.outputFileSystem = fs;
 compiler.run(function (err) {
     if(!err){
-        compiler.watch({},function () {
-
+        compiler.watch({
+            aggregateTimeout:300
+        },function (err) {
 
         });
     }

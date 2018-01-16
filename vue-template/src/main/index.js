@@ -5,6 +5,9 @@ Vue.use(Router);
 
 function main(config) {
     (function initEnvironment(data){
+        if(!Module.has('env')){
+            return;
+        }
         var environment = Module.module('env').getService('environment');
         environment.updateEnvironment(data);
     })(config);
