@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server/server.js",
     "start-debug": "node server/server-debug.js",
-    "build": "gulp build",
+    "build": "webpack --config  build/webpack.pro.config.js",
     "build-dev": "gulp buildDev",
     "build-release": "gulp buildRelease",
     "clean": "gulp clean",

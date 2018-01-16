@@ -1,4 +1,3 @@
-
 var config = require('../../build/webpack.dev.config.js');
 const webpack = require('webpack');
 const MemoryFS = require("memory-fs");

@@ -4,6 +4,7 @@ var merge = require('webpack-merge')
 const Constant = require('./constant');
 const srcDir = path.resolve(__dirname,'../src');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var config = require('./runtime').config;
 
 function baseConfig() {
     var _baseConfig = {
@@ -47,13 +48,14 @@ function baseConfig() {
             new webpack.optimize.CommonsChunkPlugin({
                 name: Constant.SYSTEM_COMMON
             }),
-            new webpack.optimize.ModuleConcatenationPlugin(),
-            new ExtractTextPlugin({
-                filename: 'css/[name].css'
-            })
-
+            new webpack.optimize.ModuleConcatenationPlugin()
         ]
     };
+    if(config.extractCss){
+        _baseConfig.plugins.push(new ExtractTextPlugin({
+            filename: 'css/[name].css'
+        }));
+    }
     return _baseConfig;
 }
 

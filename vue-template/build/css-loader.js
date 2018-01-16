@@ -1,9 +1,10 @@
+var config = require('./runtime').config;
 function createLoaders(type,options) {
     options = options || {}
     var cssLoader = {
         loader: 'css-loader',
         options: {
-            minimize: process.env.NODE_ENV === 'production',
+            minimize: config.minimize,
             sourceMap: options.sourceMap
         }
     };

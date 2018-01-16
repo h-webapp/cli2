@@ -1,3 +1,2 @@
-(function (define) {
-    define('LoadEnvironment')('env/login_applications.json');
-})(HERE.FRAMEWORK.constant);
+import LoadEnvironment from '../main/environment';
+LoadEnvironment('login_applications.json');

@@ -9,17 +9,17 @@ module.exports = {
             output:{
                 filename:'[name].js',
                 path:path.resolve(srcDir,'chunks'),
-                publicPath:'chunks/'
+                publicPath:'/chunks/'
             }
         }/*,
         {
             template:path.resolve(srcDir,'login/login.html'),
             templateFileName:'login.html',
-            envConfig:path.resolve(srcDir,'env/login_applications.json'),
+            envConfig:path.resolve(srcDir,'login/login_applications.json'),
             output:{
                 filename:'[name].js',
                 path:path.resolve(srcDir,'chunks/login'),
-                publicPath:'chunks/login/'
+                publicPath:'/chunks/login/'
             }
         }*/
     ]

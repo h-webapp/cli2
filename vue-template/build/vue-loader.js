@@ -1,12 +1,11 @@
-
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-
+var config = require('./runtime').config;
 function createLoaders(type,options) {
     options = options || {}
     var cssLoader = {
         loader: 'css-loader',
         options: {
-            minimize: process.env.NODE_ENV === 'production',
+            minimize: config.minimize,
             sourceMap: options.sourceMap
         }
     };
@@ -19,7 +18,7 @@ function createLoaders(type,options) {
             })
         });
     }
-    if(options['extract']){
+    if(config['extract']){
         return ExtractTextPlugin.extract({
             use: loaders,
             fallback: 'vue-style-loader'
@@ -30,7 +29,9 @@ function createLoaders(type,options) {
 }
 function cssLoaders() {
 
-    var options = {};
+    var options = {
+        sourceMap:config.sourceMap
+    };
 
     return {
         css: createLoaders('',options),
