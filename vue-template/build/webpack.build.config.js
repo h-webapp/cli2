@@ -2,7 +2,6 @@ const path = require('path');
 const srcDir = path.resolve(__dirname,'../src');
 const Constant = require('./constant');
 const buildConfig = require('./build.config');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 const baseConfig = require('./webpack.conf');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 function ensureArray(arr) {
@@ -47,26 +46,9 @@ var webpackConfigs = buildConfig.pages.map(function (page) {
     }
 
     var wpkConfig = baseConfig();
-    var plugins = wpkConfig.plugins;
 
-    if(page.template){
-        plugins.push(new HtmlWebpackPlugin({
-            template:page.template,
-            filename:page.templateFileName,
-            chunksSortMode:function (chunk1,chunk2) {
-                var n1 = chunk1.names[0],n2 = chunk2.names[0];
-                if(n1 > n2){
-                    return 1;
-                }else if(n1 < n2){
-                    return -1;
-                }
-                return 0;
-            }
-        }));
-    }
-
+    var plugins = wpkConfig.plugins || [];
     plugins.push(new CleanWebpackPlugin([path.relative(srcDir,page.output.path)],srcDir));
-
     wpkConfig.entry = entry;
     wpkConfig.output = page.output;
     return wpkConfig;

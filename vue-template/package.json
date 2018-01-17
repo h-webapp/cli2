@@ -8,12 +8,10 @@
   "scripts": {
     "start": "node server/server.js",
     "start-debug": "node server/server-debug.js",
-    "build": "webpack --config  build/webpack.pro.config.js",
-    "build-dev": "gulp buildDev",
-    "build-release": "gulp buildRelease",
+    "build": "npm run copy && npm run compile",
+    "copy":"gulp copy",
+    "compile":"webpack --config  build/webpack.pro.config.js",
     "clean": "gulp clean",
-    "clean-dev": "gulp cleanDev",
-    "clean-release": "gulp cleanRelease",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "ISC",

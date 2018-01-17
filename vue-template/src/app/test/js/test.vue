@@ -1,6 +1,7 @@
 <template>
     <div>
-        <a>test comp12</a>
+        <a>test comp1</a>
+        <div>test comp</div>
     </div>
 </template>
 
@@ -17,6 +18,6 @@ export default {
 
 <style  scoped>
 a {
-    color: #4339b9;
+    color: #94b94c;
 }
 </style>

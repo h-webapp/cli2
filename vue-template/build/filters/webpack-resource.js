@@ -37,7 +37,7 @@ function outputAppConf(response,pathname) {
 function outputTemplate(response,pathname) {
     var page = templateMap[pathname];
     var output = page.output;
-    var filePath = path.resolve(output.path,page.templateFileName);
+    var filePath = path.resolve(output.path,path.basename(page.template));
     var content = fs.readFileSync(filePath);
     response.outputContent(getMime(page.template),content);
 }

@@ -1,23 +1,29 @@
+const path = require('path');
+const srcDir = path.resolve(__dirname,'../src');
 var runtime = require('./runtime');
 runtime.config = Object.assign(runtime.config,{
     minimize:true,
     hotReplace:false,
     sourceMap:false,
-    extractCss:true
+    extractCss:true,
+    outputDir:path.resolve(srcDir,'../release')
 });
+
 var config = runtime.config;
+const buildConfig = require('./build.config');
 var wpkConfigs = require('./webpack.build.config');
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const srcDir = path.resolve(__dirname,'../src');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-wpkConfigs.forEach(function (wpkConfig) {
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+var outputDir  = config.outputDir;
+wpkConfigs.forEach(function (wpkConfig,index) {
+
+    var page = buildConfig.pages[index];
     var plugins = wpkConfig.plugins;
     var output = wpkConfig.output;
-    var outputDir  = path.resolve(srcDir,'../dist');
     output.path = path.resolve(outputDir,path.relative(srcDir,output.path));
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
+   /* plugins.push(new webpack.optimize.UglifyJsPlugin({
         uglifyOptions: {
             compress: {
                 warnings: false
@@ -25,16 +31,29 @@ wpkConfigs.forEach(function (wpkConfig) {
         },
         sourceMap: config.sourceMap,
         parallel: true
-    }));
-    plugins.push(new CleanWebpackPlugin(['./*'],outputDir));
-    plugins.push(new CopyWebpackPlugin([
-        {
-            from:srcDir,
-            to:path.resolve(srcDir,'../dist')
-        },
-        {
+    }));*/
 
-        }
-    ]));
+   var copyIgnores = ['*.vue','*.scss','*.sass','*.ts','*.css.map'];
+    if(page.template){
+        let filename = path.resolve(outputDir,path.relative(srcDir,page.template));
+
+        plugins.push(new HtmlWebpackPlugin({
+            template:page.template,
+            filename:filename,
+            inject:true,
+            cache:false,
+            chunksSortMode:function (chunk1,chunk2) {
+                var n1 = chunk1.names[0],n2 = chunk2.names[0];
+                if(n1 > n2){
+                    return 1;
+                }else if(n1 < n2){
+                    return -1;
+                }
+                return 0;
+            }
+        }));
+    }
+
 });
+
 module.exports = wpkConfigs;

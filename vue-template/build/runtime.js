@@ -1,7 +1,7 @@
 module.exports = {
     config:{
         minimize:false,
-        hotReplace:false,
+        hotReplace:true,
         sourceMap:false,
         extractCss:false
     }
