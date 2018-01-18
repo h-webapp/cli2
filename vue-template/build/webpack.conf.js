@@ -33,7 +33,7 @@ function baseConfig() {
                     loader: 'babel-loader',
                     include: [srcDir],
                     options: {
-                        "babelrc": false,
+                        //"babelrc": false,
                         "presets": [
                             ["es2015", { "modules": false }]
                         ],

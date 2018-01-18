@@ -22,8 +22,19 @@ wpkConfigs.forEach(function (wpkConfig,index) {
     var page = buildConfig.pages[index];
     var plugins = wpkConfig.plugins;
     var output = wpkConfig.output;
+
+    var rules = wpkConfig.module.rules;
+    rules.push({
+        test:/\.js$/,
+        loader:path.resolve(srcDir,'../build/loader/resource-loader')
+    });
+
+    plugins.push(new webpack.DefinePlugin({
+        'process.env.NODE_ENV': '"production"'
+    }));
+
     output.path = path.resolve(outputDir,path.relative(srcDir,output.path));
-   /* plugins.push(new webpack.optimize.UglifyJsPlugin({
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
         uglifyOptions: {
             compress: {
                 warnings: false
@@ -31,9 +42,9 @@ wpkConfigs.forEach(function (wpkConfig,index) {
         },
         sourceMap: config.sourceMap,
         parallel: true
-    }));*/
+    }));
 
-   var copyIgnores = ['*.vue','*.scss','*.sass','*.ts','*.css.map'];
+
     if(page.template){
         let filename = path.resolve(outputDir,path.relative(srcDir,page.template));
 
