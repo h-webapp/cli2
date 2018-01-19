@@ -55,7 +55,7 @@ var config = {
             docBase:[
                 {
                     path:'/',
-                    dir:path.resolve(dir,'../dist')
+                    dir:path.resolve(dir,'../release')
                 },
                 {
                     path:'/api',
