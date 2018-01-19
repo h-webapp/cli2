@@ -99,10 +99,29 @@ function LoadEnvironment(configPath) {
         urls:[configPath]
     }).then(function (dataArray) {
         var data = dataArray[0];
-        initModuleLoaderBaseURI(data.modules);
-        initApplicationLoaderBaseURI(data.apps);
-
-        main(data);
+        var modules = [],_modules = [],apps = [],_apps = [];
+        data.modules.forEach(function (m) {
+            if(m.compile === false){
+                modules.push(m);
+            }else{
+                _modules.push(m);
+            }
+            return m.compile === false;
+        });
+        data.apps.forEach(function (app) {
+            if(app.compile === false){
+                apps.push(app);
+            }else{
+                _apps.push(app);
+            }
+        });
+        register.modules(modules);
+        register.apps(apps);
+        register.register().then(function () {
+            initModuleLoaderBaseURI(_modules);
+            initApplicationLoaderBaseURI(_apps);
+            main(data);
+        });
     });
 };
 export default LoadEnvironment;

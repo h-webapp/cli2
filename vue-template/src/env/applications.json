@@ -6,7 +6,7 @@
     {"name":"util","url":"module/util/index.js"}
   ],
   "apps":[
-    {"name":"system","url":"app/system/index.js"},
+    {"name":"system","url":"app/system/index.js","compile":false},
     {"name":"search","url":"app/search/index.js"},
     {"name":"cube-search","url":"app/cube-search/index.js"},
     {"name":"org","url":"app/org/index.js"},

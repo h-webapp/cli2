@@ -32,10 +32,14 @@ var webpackConfigs = buildConfig.pages.map(function (page) {
     var resources = [];
 
     modules.forEach(function (m) {
-        resources.push(path.resolve(baseDir,m.url));
+        if(m.compile !== false){
+            resources.push(path.resolve(baseDir,m.url));
+        }
     });
     apps.forEach(function (app) {
-        resources.push(path.resolve(baseDir,app.url));
+        if(app.compile !== false){
+            resources.push(path.resolve(baseDir,app.url));
+        }
     });
     resources = resources.concat(main);
 
