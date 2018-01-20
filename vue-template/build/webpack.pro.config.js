@@ -1,5 +1,5 @@
 const path = require('path');
-const srcDir = path.resolve(__dirname,'../src');
+const srcDir = require('./util/SrcDir');
 var runtime = require('./runtime');
 runtime.config = Object.assign(runtime.config,{
     minimize:true,

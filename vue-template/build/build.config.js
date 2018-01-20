@@ -1,5 +1,5 @@
 const path = require('path');
-const srcDir = path.resolve(__dirname,'../src');
+const srcDir = require('./util/SrcDir');
 
 module.exports = {
     pages:[

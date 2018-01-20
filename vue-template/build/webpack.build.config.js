@@ -1,5 +1,5 @@
 const path = require('path');
-const srcDir = path.resolve(__dirname,'../src');
+const srcDir = require('./util/SrcDir');
 const Constant = require('./constant');
 const buildConfig = require('./build.config');
 const baseConfig = require('./webpack.conf');

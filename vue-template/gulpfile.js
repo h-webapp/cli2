@@ -1,3 +1,4 @@
+const contextPath = __dirname;
 const path = require('path');
 const gulp = require('gulp');
 const gulpMerge = require('merge-stream');
@@ -6,172 +7,21 @@ const cleanCSS = require('gulp-clean-css');
 const del = require('del');
 require('./build/webpack.pro.config');
 const config = require('./build/runtime').config;
-const srcDir = path.resolve(__dirname,'./src');
+const srcDir = require('./build/util/SrcDir');
 const buildConfig = require('./build/build.config');
 const fs = require('fs');
-const userResources = require('./resources');
-
+const {isNodeModuleUrl,parseFileType,isAbsoluteUrl,extractUrl} = require('./build/util/UrlUtil');
+const extractFileUrl = require('./build/core/resource-extract');
+const taskConfig = require('./task-config');
 gulp.task('clean', function() {
     return del([config.outputDir]);
 });
 
-var resources = new Map();
-var parseLoaders = [
-    {
-        fileRule:/\.js$/,
-        loader:cssLoader
-    },
-    {
-        fileRule:/\.js$/,
-        loader:jsLoader
-    },
-    {
-        fileRule:'/\.js$/',
-        loader:jsonLoader
-    },
-    {
-        fileRule:/\.js$/,
-        loader:htmlLoader
-    },
-    {
-        fileRule:/\.html/,
-        loader:fileLoader
-    },
-    {
-        fileRule:/\.css$/,
-        loader:cssFileLoader
-    }
-];
-function cssLoader(content) {
-    var rootFile = this.root;
-    var file = this.file;
-    var regexp = /(["'])\s*([^"']+\.css)\s*\1/g;
-    content.replace(regexp, function (all,m1,src) {
-        var _root = path.dirname(rootFile);
-        src = extractUrl(_root,src);
-        extractFileUrl([src],file);
-        resources.set(src,{
-            type:'css'
-        });
-    });
-}
-function jsLoader(content) {
-    var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.js)\s*\1/g;
-    content.replace(regexp, function (all,m1,src) {
-        var dir = path.dirname(rootFile);
-        src = extractUrl(dir,src);
-        extractFileUrl([src],rootFile);
-        resources.set(src,{
-            type:'js'
-        });
-    });
-}
-function jsonLoader(content){
-    var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.json)\s*\1/g;
-    content.replace(regexp, function (all,m1,src) {
-        var dir = path.dirname(rootFile);
-        src = extractUrl(dir,src);
-        extractFileUrl([src],rootFile);
-        resources.set(src,{
-            type:'json'
-        });
-    });
-}
-function htmlLoader(content) {
-    var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.(?:html|htm|tpl))\s*\1/g;
-    content.replace(regexp, function (all,m1,src) {
-
-        var dir = path.dirname(rootFile);
-        src = extractUrl(dir,src);
-        extractFileUrl([src],rootFile);
-        resources.set(src,{
-            type:'html'
-        });
-    });
-}
-function fileLoader(content) {
-    var rootFile = this.root;
-    var file = this.file;
-    var regexp = /(["'])*(?:src|source|href)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
-    content.replace(regexp, function (all,m1,m2,src) {
-
-        var dir = path.dirname(rootFile);
-        src = extractUrl(dir,src);
-        extractFileUrl([src],rootFile);
-        resources.set(src,{
-            type:'file'
-        });
-    });
-}
-function cssFileLoader(content){
-    var rootFile = this.root;
-    var file = this.file;
-    var regexp = /\burl\s*\((["'])\s*([^"']+\.[\w]+)\s*\1\s*\)/g;
-    content.replace(regexp, function (all,m1,src) {
-
-        var dir = path.dirname(rootFile);
-        src = extractUrl(dir,src);
-        extractFileUrl([src],rootFile);
-        resources.set(src,{
-            type:'file'
-        });
-    });
-}
-function isAbsoluteUrl(src){
-    return /^(https*|file):\/\//.test(src);
-}
-function isNodeModuleUrl(src){
-    return /^\/node_modules\b/.test(src);
-}
-function extractUrl(dir,src){
-
-    if(isAbsoluteUrl(src)){
-        return src;
-    }else if(isNodeModuleUrl(src)){
-        src = path.resolve(__dirname,src.replace(/^\/+/g,''));
-    }else{
-        src = path.resolve(dir,src);
-    }
-    return src;
-}
-function extractFileUrl(files,rootFile){
-
-    files.forEach(function (file) {
-
-        if(!fs.existsSync(file)){
-            return;
-        }
-        if(resources.has(file)){
-            return;
-        }
-        var content = fs.readFileSync(file).toString();
-        parseLoaders.forEach(function (loader) {
-            if(!file.match(loader.fileRule)){
-                return;
-            }
-            loader.loader.call({
-                file:file,
-                root:rootFile || file
-            },content);
-        });
-    });
-}
-function parseFileType(file){
-    if(/\.js$/.test(file)){
-        return 'js';
-    }
-    if(/\.css$/.test(file)){
-        return 'css';
-    }
-}
 function copyFile(file,fileConfig){
 
     let distDir;
     if(isNodeModuleUrl(file)){
-        distDir = path.relative(__dirname,file).replace(/\\/,'/');
+        distDir = path.relative(contextPath,file).replace(/\\/,'/');
     }else{
         distDir = path.relative(srcDir,file).replace(/\\/,'/');
     }
@@ -197,11 +47,6 @@ function copyFile(file,fileConfig){
     stream.pipe(gulp.dest(distDir));
     return stream;
 }
-function copyLangFiles(){
-    var stream = gulp.src(srcDir + '/**/*.json');
-    stream.pipe(gulp.dest(config.outputDir));
-    return stream;
-}
 gulp.task('copy',function () {
     var validFiles = {};
     buildConfig.pages.forEach(function (page) {
@@ -223,8 +68,9 @@ gulp.task('copy',function () {
             return file;
         });
 
-        extractFileUrl(allDeclares)
+        extractFileUrl.bind(page)(allDeclares)
     });
+    var resources = extractFileUrl.resources;
     var iterator = resources.entries();
     var entry;
     var streams = [];
@@ -246,13 +92,6 @@ gulp.task('copy',function () {
         streams.push(copyFile(file,validFiles[file]));
     });
 
-    userResources.forEach(function (resource) {
-        var file = extractUrl(srcDir,resource.url);
-        streams.push(copyFile(file,{
-            type:resource.type
-        }));
-    });
-
-    streams.push(copyLangFiles());
+    streams = streams.concat(taskConfig.copyTasks);
     return gulpMerge(streams);
 });

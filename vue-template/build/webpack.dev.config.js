@@ -3,7 +3,7 @@ const webpack = require('webpack');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const srcDir = path.resolve(__dirname,'../src')
+const srcDir = require('./util/SrcDir');
 var config = require('./runtime').config;
 var wpkConfigs = require('./webpack.build.config');
 const buildConfig = require('./build.config');

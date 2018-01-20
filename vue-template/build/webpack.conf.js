@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 var merge = require('webpack-merge')
 const Constant = require('./constant');
-const srcDir = path.resolve(__dirname,'../src');
+const srcDir = require('./util/SrcDir');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var config = require('./runtime').config;
 
