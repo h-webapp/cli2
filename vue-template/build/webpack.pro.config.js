@@ -1,13 +1,6 @@
 const path = require('path');
 const srcDir = require('./util/SrcDir');
-var runtime = require('./runtime');
-runtime.config = Object.assign(runtime.config,{
-    minimize:true,
-    hotReplace:false,
-    sourceMap:false,
-    extractCss:true,
-    outputDir:path.resolve(srcDir,'../release')
-});
+var runtime = require('./runtime.pro');
 
 var config = runtime.config;
 const buildConfig = require('./build.config');
@@ -30,7 +23,7 @@ wpkConfigs.forEach(function (wpkConfig,index) {
     }));
 
 
-    /*plugins.push(new webpack.optimize.UglifyJsPlugin({
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
         uglifyOptions: {
             compress: {
                 warnings: false
@@ -38,28 +31,9 @@ wpkConfigs.forEach(function (wpkConfig,index) {
         },
         sourceMap: config.sourceMap,
         parallel: true
-    }));*/
+    }));
 
 
-    if(page.template){
-        let filename = path.resolve(outputDir,path.relative(srcDir,page.template));
-
-        plugins.push(new HtmlWebpackPlugin({
-            template:page.template,
-            filename:filename,
-            inject:true,
-            cache:false,
-            chunksSortMode:function (chunk1,chunk2) {
-                var n1 = chunk1.names[0],n2 = chunk2.names[0];
-                if(n1 > n2){
-                    return 1;
-                }else if(n1 < n2){
-                    return -1;
-                }
-                return 0;
-            }
-        }));
-    }
 
 });
 

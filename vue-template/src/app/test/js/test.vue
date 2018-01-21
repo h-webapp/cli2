@@ -1,10 +1,5 @@
-<template>
-    <div>
-        <a>test comp1ate</a>
-        <div>test comp</div>
-    </div>
-</template>
-
+<template src="./test.html"></template>
+<style lang="scss"  src="./test.scss" scoped></style>
 <script>
 export default {
     name: 'test-comp',
@@ -15,9 +10,3 @@ export default {
     }
 }
 </script>
-
-<style  scoped>
-a {
-    color: #4361b9;
-}
-</style>

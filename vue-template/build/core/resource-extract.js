@@ -6,7 +6,7 @@ var resources = new Map();
 var parseLoaders = require('./loaders');
 var buildConfigFile = path.resolve(__dirname,'../../task-config.js');
 if(fs.existsSync(buildConfigFile)){
-    let _loaders = require(buildConfigFile).loaders || [];
+    let _loaders = require(buildConfigFile).loaders() || [];
     parseLoaders = parseLoaders.concat(_loaders);
 }
 function extractFileUrl(files,rootFile){

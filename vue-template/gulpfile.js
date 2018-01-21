@@ -5,8 +5,7 @@ const gulpMerge = require('merge-stream');
 const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
 const del = require('del');
-require('./build/webpack.pro.config');
-const config = require('./build/runtime').config;
+const config = require('./build/runtime.pro').config;
 const srcDir = require('./build/util/SrcDir');
 const buildConfig = require('./build/build.config');
 const fs = require('fs');
@@ -14,7 +13,7 @@ const {isNodeModuleUrl,parseFileType,isAbsoluteUrl,extractUrl} = require('./buil
 const extractFileUrl = require('./build/core/resource-extract');
 const taskConfig = require('./task-config');
 gulp.task('clean', function() {
-    return del([config.outputDir]);
+    return del.sync([config.outputDir]);
 });
 
 function copyFile(file,fileConfig){
@@ -92,6 +91,6 @@ gulp.task('copy',function () {
         streams.push(copyFile(file,validFiles[file]));
     });
 
-    streams = streams.concat(taskConfig.copyTasks);
+    streams = streams.concat(taskConfig.copyTasks());
     return gulpMerge(streams);
 });

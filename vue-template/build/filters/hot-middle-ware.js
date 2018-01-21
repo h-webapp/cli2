@@ -13,7 +13,6 @@ if(config.hotReplace){
     compiler.plugin('compilation', function (compilation) {
 
         compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-            throw new Error('reload');
             hotMiddleware.publish({ action: 'reload' });
             cb();
         })

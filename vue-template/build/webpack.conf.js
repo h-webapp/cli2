@@ -53,7 +53,7 @@ function baseConfig() {
     };
     if(config.extractCss){
         _baseConfig.plugins.push(new ExtractTextPlugin({
-            filename: 'css/[name].css'
+            filename: 'style.css'
         }));
     }
     return _baseConfig;

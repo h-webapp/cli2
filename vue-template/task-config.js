@@ -14,13 +14,21 @@ function copyCssTask(){
     stream.pipe(gulp.dest(config.outputDir));
     return stream;
 }
+function copyIcoTask(){
+    var stream = gulp.src(srcDir + '/**/*.ico');
+    stream.pipe(gulp.dest(config.outputDir));
+    return stream;
+}
 var buildConfig = {
-    loaders:[
-
-    ],
-    copyTasks:[
-        copyLangTask(),
-        copyCssTask()
-    ]
+    loaders: function () {
+        return [];
+    },
+    copyTasks: function () {
+        return [
+            copyLangTask(),
+            copyCssTask(),
+            copyIcoTask()
+        ];
+    }
 };
 module.exports = buildConfig;

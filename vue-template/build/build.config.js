@@ -2,24 +2,19 @@ const path = require('path');
 const srcDir = require('./util/SrcDir');
 
 module.exports = {
+    output:{
+        filename:'[name].js',
+        path:path.resolve(srcDir,'chunks'),
+        publicPath:'/chunks/'
+    },
     pages:[
         {
             template:path.resolve(srcDir,'index.html'),
-            envConfig:path.resolve(srcDir,'env/applications.json'),
-            output:{
-                filename:'[name].js',
-                path:path.resolve(srcDir,'chunks'),
-                publicPath:'/chunks/'
-            }
-        }/*,
+            envConfig:path.resolve(srcDir,'env/applications.json')
+        },
         {
             template:path.resolve(srcDir,'login/login.html'),
-            envConfig:path.resolve(srcDir,'login/login_applications.json'),
-            output:{
-                filename:'[name].js',
-                path:path.resolve(srcDir,'chunks/login'),
-                publicPath:'/chunks/login/'
-            }
-        }*/
+            envConfig:path.resolve(srcDir,'login/login_applications.json')
+        }
     ]
 };
