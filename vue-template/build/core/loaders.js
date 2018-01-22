@@ -59,7 +59,7 @@ function fileLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
     var page = this.page;
-    var regexp = /(["'])*(?:src|source|href)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
+    var regexp = /(["'])*(?:src|source|href|url|pre-url)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
     content.replace(regexp, function (all,m1,m2,src) {
 
         var dir = path.dirname(page.template);
