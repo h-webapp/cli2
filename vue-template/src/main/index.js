@@ -46,7 +46,7 @@ function main(config) {
         el:'#main-app',
         router
     });
-    constant('mainVue',vueInstance);
+    constant('main',vueInstance);
     return vueInstance;
 }
 export default main;

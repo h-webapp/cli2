@@ -3,7 +3,7 @@ import { ApplicationExtend } from './application-extend';
 import { Promise } from 'promise-deferred-sim';
 import Vue from 'vue'
 
-var versionConfig = require('../../../build/version/version');
+var versionConfig = require('../../build/version/version');
 Loader.GlobalParam = Loader.GlobalParam || {};
 Loader.GlobalParam.version = versionConfig.version;
 if(!window.Promise){
