@@ -1,31 +1,6 @@
 const path = require('path');
-const { extractUrl } = require('../util/UrlUtil');
-var parseLoaders = [
-    {
-        fileRule:/\.js$/,
-        loader:cssLoader
-    },
-    {
-        fileRule:/\.js$/,
-        loader:jsLoader
-    },
-    {
-        fileRule:'/\.js$/',
-        loader:jsonLoader
-    },
-    {
-        fileRule:/\.js$/,
-        loader:htmlLoader
-    },
-    {
-        fileRule:/\.html/,
-        loader:fileLoader
-    },
-    {
-        fileRule:/\.css$/,
-        loader:cssFileLoader
-    }
-];
+const { extractUrl,parseFileType } = require('../util/UrlUtil');
+const srcDir = require('../util/SrcDir');
 function cssLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
@@ -88,26 +63,61 @@ function fileLoader(content,resources) {
     content.replace(regexp, function (all,m1,m2,src) {
 
         var dir = path.dirname(page.template);
+        if(page.templateBasePath){
+            let relUrl = path.relative(srcDir,dir).replace(/\\/g,'/') || '';
+            let paths = relUrl.split('/');
+            page.templateBasePath.split('/').some(function (p) {
+                if(p === '..'){
+                    paths.pop();
+                }
+            });
+            console.log(paths);
+            dir = path.resolve(srcDir,paths.join(''));
+        }
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
         resources.set(src,{
-            type:'file'
+            type:parseFileType(src) || 'file'
         });
     });
 }
 function cssFileLoader(content,resources){
-    var _this = this;
-    var rootFile = this.root;
-    var file = this.file;
+
     var regexp = /\burl\s*\((["'])\s*([^"']+\.[\w]+)\s*\1\s*\)/g;
+    var file = this.file;
     content.replace(regexp, function (all,m1,src) {
 
-        var dir = path.dirname(rootFile);
+        var dir = path.dirname(file);
         src = extractUrl(dir,src);
-        _this.execute([src],rootFile);
         resources.set(src,{
             type:'file'
         });
     });
 }
+var parseLoaders = [
+    {
+        fileRule:/\.js$/,
+        loader:cssLoader
+    },
+    {
+        fileRule:/\.js$/,
+        loader:jsLoader
+    },
+    {
+        fileRule:'/\.js$/',
+        loader:jsonLoader
+    },
+    {
+        fileRule:/\.js$/,
+        loader:htmlLoader
+    },
+    {
+        fileRule:/\.html/,
+        loader:fileLoader
+    },
+    {
+        fileRule:/\.css$/,
+        loader:cssFileLoader
+    }
+];
 module.exports = parseLoaders;

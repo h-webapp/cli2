@@ -11,11 +11,7 @@ function copyLangTask(){
 function copyCssTask(){
 
     var stream = gulp.src(path.resolve(srcDir,'index.css'));
-    stream.pipe(gulp.dest(config.outputDir));
-    return stream;
-}
-function copyIcoTask(){
-    var stream = gulp.src(srcDir + '/**/*.ico');
+    stream.pipe(cleanCSS());
     stream.pipe(gulp.dest(config.outputDir));
     return stream;
 }
@@ -26,8 +22,7 @@ var buildConfig = {
     copyTasks: function () {
         return [
             copyLangTask(),
-            copyCssTask(),
-            copyIcoTask()
+            copyCssTask()
         ];
     }
 };

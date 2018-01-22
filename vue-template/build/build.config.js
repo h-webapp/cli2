@@ -14,6 +14,7 @@ module.exports = {
         },
         {
             template:path.resolve(srcDir,'login/login.html'),
+            templateBasePath:'./',
             envConfig:path.resolve(srcDir,'login/login_applications.json')
         }
     ]

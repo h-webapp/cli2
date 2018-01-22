@@ -20,10 +20,10 @@ gulp.task('clean', function() {
 function copyFile(file,fileConfig){
 
     let distDir;
-    if(isNodeModuleUrl(file)){
-        distDir = path.relative(contextPath,file).replace(/\\/,'/');
+    var regexp = /\\/g;
+    if(isNodeModuleUrl(distDir = path.relative(contextPath,file).replace(regexp,'/'))){
     }else{
-        distDir = path.relative(srcDir,file).replace(/\\/,'/');
+        distDir = path.relative(srcDir,file).replace(regexp,'/');
     }
     distDir = path.resolve(config.outputDir,distDir);
     distDir = path.dirname(distDir);
@@ -45,6 +45,7 @@ function copyFile(file,fileConfig){
     }else if(fileType === 'css'){
         stream.pipe(cleanCSS());
     }
+
     stream.on('error', function (err) {
         console.error(err);
     });
@@ -71,8 +72,11 @@ gulp.task('copy',function () {
             }
             return file;
         });
-
-        extractFileUrl.bind(page)(allDeclares)
+        var extractFn = extractFileUrl.bind(page);
+        extractFn(allDeclares);
+        if(page.template){
+            extractFn(page.template);
+        }
     });
     var resources = extractFileUrl.resources;
     var iterator = resources.entries();

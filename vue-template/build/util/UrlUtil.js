@@ -4,7 +4,7 @@ function isAbsoluteUrl(src){
     return /^(https*|file):\/\//.test(src);
 }
 function isNodeModuleUrl(src){
-    return /^\/node_modules\b/.test(src);
+    return /^\/?node_modules\b/.test(src);
 }
 function extractUrl(dir,src){
 

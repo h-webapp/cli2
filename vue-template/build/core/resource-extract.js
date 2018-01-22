@@ -12,6 +12,7 @@ if(fs.existsSync(buildConfigFile)){
 function extractFileUrl(files,rootFile){
 
     var page = this;
+    files = [].concat(files);
     files.forEach(function (file) {
 
         if(!fs.existsSync(file)){
@@ -28,7 +29,7 @@ function extractFileUrl(files,rootFile){
             loader.loader.call({
                 file:file,
                 page:page,
-                execute:extractFileUrl,
+                execute:extractFileUrl.bind(page),
                 root:rootFile || file
             },content,resources);
         });

@@ -1,6 +1,6 @@
 {
   "name": "h-application",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "web,web-application,application,module,web-module",
   "bin": "./bin/h-application.js",
   "directories": {
