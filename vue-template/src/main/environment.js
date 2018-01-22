@@ -94,7 +94,7 @@ function initApplicationLoaderBaseURI(apps) {
 }
 function LoadEnvironment(configPath) {
     var register = Register.getInstance();
-    ResourceLoader.load({
+    return ResourceLoader.load({
         type:'json',
         urls:[configPath]
     }).then(function (dataArray) {
@@ -117,10 +117,10 @@ function LoadEnvironment(configPath) {
         });
         register.modules(modules);
         register.apps(apps);
-        register.register().then(function () {
+        return register.register().then(function () {
             initModuleLoaderBaseURI(_modules);
             initApplicationLoaderBaseURI(_apps);
-            main(data);
+            return main(data);
         });
     });
 };

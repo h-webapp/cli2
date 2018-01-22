@@ -42,9 +42,11 @@ function main(config) {
     var router = new Router({
         routes:routes
     });
-    constant('mainVue',new Vue({
+    var vueInstance = new Vue({
         el:'#main-app',
         router
-    }));
+    });
+    constant('mainVue',vueInstance);
+    return vueInstance;
 }
 export default main;
