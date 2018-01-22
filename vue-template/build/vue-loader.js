@@ -19,7 +19,6 @@ function createLoaders(type,options) {
         });
     }
     if(config['extractCss']){
-        console.log(111111111111111111);
         return ExtractTextPlugin.extract({
             use: loaders,
             fallback: 'vue-style-loader'

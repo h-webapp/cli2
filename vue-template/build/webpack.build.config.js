@@ -72,6 +72,7 @@ buildConfig.pages.map(function (page) {
         plugins.push(new HtmlWebpackPlugin({
             template:page.template,
             filename:filename,
+            hash:true,
             chunksSortMode:function (chunk1,chunk2) {
                 var n1 = chunk1.names[0],n2 = chunk2.names[0];
                 if(n1 > n2){

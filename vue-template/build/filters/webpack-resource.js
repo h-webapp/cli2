@@ -3,6 +3,7 @@ const fs = require('fs');
 const srcDir = path.resolve(__dirname,'../../src');
 const MIME = require('mime');
 var buildConfig = require('../build.config');
+const webpackRunner = require('./webpack-runner');
 var appConfigMap = {};
 var templateMap = {};
 buildConfig.pages.forEach(function (page) {
@@ -27,7 +28,7 @@ function httpPath(absPath) {
 function outputAppConf(response,pathname) {
 
     var page = appConfigMap[pathname];
-    var json = fs.readFileSync(page.envConfig);
+    var json = readFileSync(page.envConfig);
     var config = JSON.parse(json);
 
     delete config.main;
@@ -38,7 +39,7 @@ function outputTemplate(response,pathname) {
     var page = templateMap[pathname];
     var output = buildConfig.output;
     var filePath = path.resolve(output.path,pathname);
-    var content = fs.readFileSync(filePath);
+    var content = readFileSync(filePath);
     response.outputContent(getMime(page.template),content);
 }
 function getMime(absPath) {
@@ -51,7 +52,25 @@ function getMime(absPath) {
 function outputStaticResource(response,absPath) {
     var mime = getMime(absPath);
     response.setHeader('Content-Type', mime);
-    fs.createReadStream(absPath).pipe(response);
+    createReadStream(absPath).pipe(response);
+}
+function readFileSync(filePath) {
+    var fs = isFile(filePath);
+    return fs.readFileSync(filePath);
+}
+function createReadStream(absPath) {
+    var fs = isFile(absPath);
+    return fs.createReadStream(absPath);
+}
+function isFile(filePath) {
+    var _fs = webpackRunner.getFs();
+    if( _fs.existsSync(filePath) && _fs.statSync(filePath).isFile()){
+        return _fs;
+    }
+    if(fs.existsSync(filePath) && fs.statSync(filePath).isFile()){
+        return fs;
+    }
+    return null;
 }
 function output(chain,request,response) {
     var pathname = request.pathname;
@@ -77,7 +96,7 @@ function output(chain,request,response) {
             return true;
         }
         let filePath = path.resolve(srcDir,relativePath);
-        if(fs.existsSync(filePath) && fs.statSync(filePath).isFile()){
+        if(isFile(filePath)){
             outputStaticResource(response,filePath);
             return true;
         }
@@ -87,8 +106,11 @@ function output(chain,request,response) {
     }
 }
 function execute(chain,request,response) {
-    output(chain,request,response);
-
+    if(webpackRunner.isFinished()){
+        output(chain,request,response);
+    }else{
+        response.outputContent('text/html;charset=utf8','compiling ...');
+    }
 }
 execute.priority = -2;
 exports.execute = execute;

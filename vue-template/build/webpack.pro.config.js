@@ -7,7 +7,8 @@ const buildConfig = require('./build.config');
 var wpkConfigs = require('./webpack.build.config');
 const webpack = require('webpack');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+var version = require('./version');
+version.update();
 
 var outputDir  = config.outputDir;
 wpkConfigs.forEach(function (wpkConfig,index) {

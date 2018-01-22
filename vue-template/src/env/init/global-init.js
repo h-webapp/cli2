@@ -1,8 +1,11 @@
-import { Module,Application,define } from 'webapp-core';
+import { Module,Application,define,Loader } from 'webapp-core';
 import { ApplicationExtend } from './application-extend';
 import { Promise } from 'promise-deferred-sim';
 import Vue from 'vue'
 
+var versionConfig = require('../../../build/version/version');
+Loader.GlobalParam = Loader.GlobalParam || {};
+Loader.GlobalParam.version = versionConfig.version;
 if(!window.Promise){
     window.Promise = HERE.$Promise;
 }
