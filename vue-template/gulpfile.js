@@ -4,6 +4,7 @@ const gulp = require('gulp');
 const gulpMerge = require('merge-stream');
 const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
+const babel = require('gulp-babel');
 const del = require('del');
 const config = require('./build/runtime.pro').config;
 const srcDir = require('./build/util/SrcDir');
@@ -30,7 +31,11 @@ function copyFile(file,fileConfig){
     var stream = gulp.src(file);
     var fileType = fileConfig.type || parseFileType(file);
     if(fileType === 'js'){
-        stream.pipe(uglify({
+        stream.pipe(babel({
+            babelrc: false,
+            presets: [[ "es2015", { modules: false } ]],
+            plugins: []
+        })).pipe(uglify({
             compress:{
                 drop_console:true,
                 unused:true,
