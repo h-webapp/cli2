@@ -1,4 +1,4 @@
-import { Module,Application,define,Loader,ResourceLoader } from 'webapp-core';
+import { Module,Application,define,constant,Loader,ResourceLoader } from 'webapp-core';
 import { ApplicationExtend } from './application-extend';
 import { Promise } from 'promise-deferred-sim';
 import Vue from 'vue'
@@ -28,3 +28,6 @@ initVariable('Vue',Vue);
 initVariable('HERE.FRAMEWORK.Module',Module);
 initVariable('HERE.FRAMEWORK.Application',Application);
 initVariable('HERE.FRAMEWORK.ResourceLoader',ResourceLoader);
+initVariable('HERE.FRAMEWORK.Loader',Loader);
+initVariable('HERE.FRAMEWORK.define',define);
+initVariable('HERE.FRAMEWORK.constant',constant);
