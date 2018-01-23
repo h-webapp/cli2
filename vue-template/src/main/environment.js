@@ -1,5 +1,4 @@
 import { Module,Application,ResourceLoader,Register } from 'webapp-core';
-import main from './index';
 var body = document.body;
 var loadingTimeout,loadingCount = 0;
 function isResource(data){
@@ -120,7 +119,7 @@ function LoadEnvironment(configPath) {
         return register.register().then(function () {
             initModuleLoaderBaseURI(_modules);
             initApplicationLoaderBaseURI(_apps);
-            return main(data);
+            return data;
         });
     });
 };

@@ -1,14 +1,35 @@
 const fs = require('fs');
 const path = require('path');
-
-var resources = new Map();
-
+const srcDir = require('../util/SrcDir');
+const vendorDir = path.resolve(srcDir,'vendor');
+var _resources = new Map();
+var resources = {
+    set:function (key,value) {
+        if(key.indexOf(vendorDir) === 0){
+            return value;
+        }
+        return _resources.set(key,value);
+    },
+    get:function (key) {
+        return _resources.get(key);
+    },
+    has:function (key) {
+        if(key.indexOf(vendorDir) === 0){
+            return true;
+        }
+        return _resources.has(key);
+    },
+    entries:function () {
+        return _resources.entries();
+    }
+};
 var parseLoaders = require('./loaders');
 var buildConfigFile = path.resolve(__dirname,'../../task-config.js');
 if(fs.existsSync(buildConfigFile)){
     let _loaders = require(buildConfigFile).loaders() || [];
     parseLoaders = parseLoaders.concat(_loaders);
 }
+
 function extractFileUrl(files,rootFile){
 
     var page = this;

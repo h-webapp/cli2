@@ -10,11 +10,12 @@ module.exports = {
     pages:[
         {
             template:path.resolve(srcDir,'index.html'),
+            //templateBasePath:'./',
             envConfig:path.resolve(srcDir,'env/applications.json')
         },
         {
             template:path.resolve(srcDir,'login/login.html'),
-            templateBasePath:'./',
+            templateBasePath:'../',
             envConfig:path.resolve(srcDir,'login/login_applications.json')
         }
     ]

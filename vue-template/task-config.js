@@ -5,14 +5,18 @@ const srcDir = require('./build/util/SrcDir');
 const config = require('./build/runtime').config;
 function copyLangTask(){
     var stream = gulp.src(srcDir + '/**/lang/*.json');
-    stream.pipe(gulp.dest(config.outputDir));
+    stream = stream.pipe(gulp.dest(config.outputDir));
     return stream;
 }
 function copyCssTask(){
 
     var stream = gulp.src(path.resolve(srcDir,'index.css'));
-    stream.pipe(cleanCSS());
-    stream.pipe(gulp.dest(config.outputDir));
+    stream = stream.pipe(cleanCSS()).pipe(gulp.dest(config.outputDir));
+    return stream;
+}
+function copyVendorTask() {
+    var stream = gulp.src(srcDir + '/vendor/**/*');
+    stream = stream.pipe(gulp.dest(path.resolve(config.outputDir,'vendor')));
     return stream;
 }
 var buildConfig = {
@@ -22,7 +26,8 @@ var buildConfig = {
     copyTasks: function () {
         return [
             copyLangTask(),
-            copyCssTask()
+            copyCssTask(),
+            copyVendorTask()
         ];
     }
 };

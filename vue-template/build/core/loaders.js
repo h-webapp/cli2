@@ -1,12 +1,16 @@
 const path = require('path');
-const { extractUrl,parseFileType } = require('../util/UrlUtil');
+const { extractUrl,parseFileType,resolve } = require('../util/UrlUtil');
 const srcDir = require('../util/SrcDir');
+const URL = require('url');
 function cssLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
     var file = this.file;
     var regexp = /(["'])\s*([^"']+\.css)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
+
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
         var _root = path.dirname(rootFile);
         src = extractUrl(_root,src);
         _this.execute([src],file);
@@ -20,6 +24,9 @@ function jsLoader(content,resources) {
     var rootFile = this.root;
     var regexp = /(["'])\s*([^"']+\.js)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
+
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
@@ -33,6 +40,9 @@ function jsonLoader(content,resources){
     var rootFile = this.root;
     var regexp = /(["'])\s*([^"']+\.json)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
+
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
@@ -47,6 +57,8 @@ function htmlLoader(content,resources) {
     var regexp = /(["'])\s*([^"']+\.(?:html|htm|tpl))\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
 
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
@@ -59,22 +71,17 @@ function fileLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
     var page = this.page;
-    var regexp = /(["'])*(?:src|source|href|url|pre-url)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
+    var regexp = /(["'])*(?:src|source|href|pre-url)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
     content.replace(regexp, function (all,m1,m2,src) {
 
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
         var dir = path.dirname(page.template);
         if(page.templateBasePath){
-            let relUrl = path.relative(srcDir,dir).replace(/\\/g,'/') || '';
-            let paths = relUrl.split('/');
-            page.templateBasePath.split('/').some(function (p) {
-                if(p === '..'){
-                    paths.pop();
-                }
-            });
-            console.log(paths);
-            dir = path.resolve(srcDir,paths.join(''));
+            dir = resolve(srcDir,dir,page.templateBasePath);
         }
         src = extractUrl(dir,src);
+
         _this.execute([src],rootFile);
         resources.set(src,{
             type:parseFileType(src) || 'file'
@@ -86,6 +93,9 @@ function cssFileLoader(content,resources){
     var regexp = /\burl\s*\((["'])\s*([^"']+\.[\w]+)\s*\1\s*\)/g;
     var file = this.file;
     content.replace(regexp, function (all,m1,src) {
+
+        var urlInfo = URL.parse(src);
+        src = urlInfo.pathname;
 
         var dir = path.dirname(file);
         src = extractUrl(dir,src);

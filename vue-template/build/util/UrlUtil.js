@@ -1,10 +1,11 @@
 const path = require('path');
+const srcDir = require('./SrcDir');
 var contextDir = path.resolve(__dirname,'../../');
 function isAbsoluteUrl(src){
     return /^(https*|file):\/\//.test(src);
 }
 function isNodeModuleUrl(src){
-    return /^\/?node_modules\b/.test(src);
+    return /\b\/?node_modules\b/.test(src);
 }
 function extractUrl(dir,src){
 
@@ -13,7 +14,7 @@ function extractUrl(dir,src){
     }else if(isNodeModuleUrl(src)){
         src = path.resolve(contextDir,src.replace(/^\/+/g,''));
     }else{
-        src = path.resolve(dir,src);
+        src = resolve(srcDir,dir,src);
     }
     return src;
 }
@@ -25,7 +26,22 @@ function parseFileType(file){
         return 'css';
     }
 }
+function resolve(rootPath,absPath,relPath) {
+    let relUrl = path.relative(rootPath,absPath).replace(/\\/g,'/') || '';
+    let paths = relUrl.split('/');
+    relPath.split('/').some(function (p) {
+        if(p === '..'){
+            paths.pop();
+        }else if(p){
+            paths.push(p);
+        }
+    });
+    relPath = paths.join('/').replace(/^\/+/,'').replace(/\/{2,}/,'/');
+    absPath = path.resolve(srcDir,relPath);
+    return absPath;
+}
 exports.isAbsoluteUrl = isAbsoluteUrl;
 exports.isNodeModuleUrl = isNodeModuleUrl;
 exports.extractUrl = extractUrl;
 exports.parseFileType = parseFileType;
+exports.resolve = resolve;

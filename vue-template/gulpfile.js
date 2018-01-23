@@ -10,13 +10,12 @@ const config = require('./build/runtime.pro').config;
 const srcDir = require('./build/util/SrcDir');
 const buildConfig = require('./build/build.config');
 const fs = require('fs');
-const {isNodeModuleUrl,parseFileType,isAbsoluteUrl,extractUrl} = require('./build/util/UrlUtil');
+const {isNodeModuleUrl,parseFileType,isAbsoluteUrl} = require('./build/util/UrlUtil');
 const extractFileUrl = require('./build/core/resource-extract');
 const taskConfig = require('./task-config');
 gulp.task('clean', function() {
     return del.sync([config.outputDir]);
 });
-
 function copyFile(file,fileConfig){
 
     let distDir;
@@ -31,25 +30,27 @@ function copyFile(file,fileConfig){
     var stream = gulp.src(file);
     var fileType = fileConfig.type || parseFileType(file);
     if(fileType === 'js'){
-        stream.pipe(babel({
-            babelrc: false,
-            presets: [[ "es2015", { modules: false } ]],
-            plugins: []
-        })).pipe(uglify({
-            compress:{
-                drop_console:true,
-                unused:true,
-                dead_code:true
-            }
-        }));
+        if(!file.endsWith('.min.js')){
+            stream = stream.pipe(babel({
+                babelrc: false,
+                presets: [[ "es2015", { modules: false } ]],
+                plugins: []
+            })).pipe(uglify({
+                compress:{
+                    drop_console:true,
+                    unused:true,
+                    dead_code:true
+                }
+            }));
+        }
     }else if(fileType === 'css'){
-        stream.pipe(cleanCSS());
+        stream = stream.pipe(cleanCSS());
     }
 
-    stream.on('error', function (err) {
+    stream = stream.on('error', function (err) {
         console.error(err);
     });
-    stream.pipe(gulp.dest(distDir));
+    stream = stream.pipe(gulp.dest(distDir));
     return stream;
 }
 gulp.task('copy',function () {

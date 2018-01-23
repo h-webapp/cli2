@@ -4,6 +4,7 @@ const srcDir = require('./util/SrcDir');
 const Constant = require('./constant');
 const buildConfig = require('./build.config');
 const baseConfig = require('./webpack.conf');
+const { resolve } = require('./util/UrlUtil');
 var runtime = require('./runtime');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -35,6 +36,10 @@ buildConfig.pages.map(function (page) {
     var baseDir = srcDir;
     if(page.template){
         baseDir = path.dirname(page.template);
+        if(page.templateBasePath){
+            baseDir = resolve(srcDir,baseDir,page.templateBasePath);
+
+        }
     }
     var main = ensureArray(envConfig.main).map(function (file) {
         return path.resolve(baseDir,file);
@@ -57,7 +62,6 @@ buildConfig.pages.map(function (page) {
         }
     });
     resources = resources.concat(main);
-
     chunks.push(addEntryFile(page,Constant.SYSTEM_MAIN,resources));
     if(init.length > 0){
         chunks.push(addEntryFile(page,Constant.SYSTEM_INIT,init));

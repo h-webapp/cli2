@@ -1,2 +1,5 @@
 import LoadEnvironment from '../main/environment';
-LoadEnvironment('login_applications.json');
+import main from "../main";
+LoadEnvironment('login/login_applications.json').then(function (data) {
+    main(data);
+});
