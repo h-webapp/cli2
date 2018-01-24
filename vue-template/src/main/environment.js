@@ -91,6 +91,13 @@ function initApplicationLoaderBaseURI(apps) {
         Application.app(app.name).loader().baseURI(dirName(app.url));
     });
 }
+function initEnvironment(data){
+    if(!Module.has('env')){
+        return;
+    }
+    var environment = Module.module('env').getService('environment');
+    environment.updateEnvironment(data);
+}
 function LoadEnvironment(configPath) {
     var register = Register.getInstance();
     return ResourceLoader.load({
@@ -119,6 +126,7 @@ function LoadEnvironment(configPath) {
         return register.register().then(function () {
             initModuleLoaderBaseURI(_modules);
             initApplicationLoaderBaseURI(_apps);
+            initEnvironment(data);
             return data;
         });
     });
