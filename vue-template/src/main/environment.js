@@ -107,7 +107,7 @@ function LoadEnvironment(configPath) {
         var data = dataArray[0];
         var modules = [],_modules = [],apps = [],_apps = [];
         data.modules.forEach(function (m) {
-            if(m.compile === false){
+            if(m.compile === false || /^(https*|file):\/\//i.test(m.url)){
                 modules.push(m);
             }else{
                 _modules.push(m);
@@ -115,7 +115,7 @@ function LoadEnvironment(configPath) {
             return m.compile === false;
         });
         data.apps.forEach(function (app) {
-            if(app.compile === false){
+            if(app.compile === false || /^(https*|file):\/\//i.test(app.url)){
                 apps.push(app);
             }else{
                 _apps.push(app);

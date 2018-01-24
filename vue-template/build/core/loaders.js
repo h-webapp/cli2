@@ -1,5 +1,5 @@
 const path = require('path');
-const { extractUrl,parseFileType,resolve } = require('../util/UrlUtil');
+const { extractUrl,parseFileType,resolve,isAbsoluteUrl } = require('../util/UrlUtil');
 const srcDir = require('../util/SrcDir');
 const URL = require('url');
 function cssLoader(content,resources) {
@@ -9,6 +9,9 @@ function cssLoader(content,resources) {
     var regexp = /(["'])\s*([^"']+\.css)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
         var _root = path.dirname(rootFile);
@@ -25,6 +28,9 @@ function jsLoader(content,resources) {
     var regexp = /(["'])\s*([^"']+\.js)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
@@ -41,6 +47,9 @@ function jsonLoader(content,resources){
     var regexp = /(["'])\s*([^"']+\.json)\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
@@ -57,6 +66,9 @@ function htmlLoader(content,resources) {
     var regexp = /(["'])\s*([^"']+\.(?:html|htm|tpl))\s*\1/g;
     content.replace(regexp, function (all,m1,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
         var dir = path.dirname(rootFile);
@@ -74,6 +86,9 @@ function fileLoader(content,resources) {
     var regexp = /(["'])*(?:src|source|href|pre-url)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
     content.replace(regexp, function (all,m1,m2,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
         var dir = path.dirname(page.template);
@@ -94,6 +109,9 @@ function cssFileLoader(content,resources){
     var file = this.file;
     content.replace(regexp, function (all,m1,src) {
 
+        if(isAbsoluteUrl(src)){
+            return all;
+        }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
 

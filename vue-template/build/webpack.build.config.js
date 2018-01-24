@@ -4,7 +4,7 @@ const srcDir = require('./util/SrcDir');
 const Constant = require('./constant');
 const buildConfig = require('./build.config');
 const baseConfig = require('./webpack.conf');
-const { resolve } = require('./util/UrlUtil');
+const { resolve,isAbsoluteUrl } = require('./util/UrlUtil');
 var runtime = require('./runtime');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -52,12 +52,12 @@ buildConfig.pages.map(function (page) {
     var chunks = [];
 
     modules.forEach(function (m) {
-        if(m.compile !== false){
+        if(m.compile !== false && !isAbsoluteUrl(m.url)){
             resources.push(path.resolve(baseDir,m.url));
         }
     });
     apps.forEach(function (app) {
-        if(app.compile !== false){
+        if(app.compile !== false && !isAbsoluteUrl(app.url)){
             resources.push(path.resolve(baseDir,app.url));
         }
     });

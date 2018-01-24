@@ -63,16 +63,20 @@ gulp.task('copy',function () {
             type:'json'
         };
 
-        var allDeclares = envConfig.modules.concat(envConfig.apps);
-        allDeclares = allDeclares.map(function (declare) {
-            var file = path.resolve(srcDir,declare.url);
+        var allDeclares = [];
+        envConfig.modules.concat(envConfig.apps).forEach(function (declare) {
+            if(isAbsoluteUrl(declare.url)){
+                return;
+            }
+            let file = path.resolve(srcDir,declare.url);
             if(declare.compile === false){
                 validFiles[file] = {
                     type:'js'
                 };
             }
-            return file;
+            allDeclares.push(file);
         });
+
         var extractFn = extractFileUrl.bind(page);
         extractFn(allDeclares);
         if(page.template){

@@ -2,7 +2,7 @@ const path = require('path');
 const srcDir = require('./SrcDir');
 var contextDir = path.resolve(__dirname,'../../');
 function isAbsoluteUrl(src){
-    return /^(https*|file):\/\//.test(src);
+    return /^(https*|file):\/\//i.test(src);
 }
 function isNodeModuleUrl(src){
     return /\b\/?node_modules\b/.test(src);
@@ -19,10 +19,10 @@ function extractUrl(dir,src){
     return src;
 }
 function parseFileType(file){
-    if(/\.js$/.test(file)){
+    if(/\.js$/i.test(file)){
         return 'js';
     }
-    if(/\.css$/.test(file)){
+    if(/\.css$/i.test(file)){
         return 'css';
     }
 }
