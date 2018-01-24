@@ -1,8 +1,13 @@
 import { Module,Application,ResourceLoader,Register } from 'webapp-core';
 var body = document.body;
 var loadingTimeout,loadingCount = 0;
+var a;
 function isResource(data){
-    return /\.(js|css|json)$/.test(data && data.url);
+    if(!a){
+        a = document.createElement('a');
+    }
+    a.href = data && data.url;
+    return /\.(js|css|json)$/.test(a.pathname);
 }
 var deferTime = 300;
 ResourceLoader.addEventListener('loadStart', function (e) {

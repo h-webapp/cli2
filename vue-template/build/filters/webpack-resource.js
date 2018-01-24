@@ -4,6 +4,7 @@ const srcDir = path.resolve(__dirname,'../../src');
 const MIME = require('mime');
 var buildConfig = require('../build.config');
 const webpackRunner = require('./webpack-runner');
+const pendingFile = path.resolve(__dirname,'./pending.html');
 var appConfigMap = {};
 var templateMap = {};
 buildConfig.pages.forEach(function (page) {
@@ -64,7 +65,7 @@ function createReadStream(absPath) {
 }
 function isFile(filePath) {
     var _fs = webpackRunner.getFs();
-    if( _fs.existsSync(filePath) && _fs.statSync(filePath).isFile()){
+    if(_fs && _fs.existsSync(filePath) && _fs.statSync(filePath).isFile()){
         return _fs;
     }
     if(fs.existsSync(filePath) && fs.statSync(filePath).isFile()){
@@ -109,7 +110,7 @@ function execute(chain,request,response) {
     if(webpackRunner.isFinished()){
         output(chain,request,response);
     }else{
-        response.outputContent('text/html;charset=utf8','compiling ...');
+        outputStaticResource(response,pendingFile);
     }
 }
 execute.priority = -2;
