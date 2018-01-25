@@ -27,6 +27,9 @@ function parseFileType(file){
     }
 }
 function resolve(rootPath,absPath,relPath) {
+    if(relPath.startsWith('/')){
+        return path.resolve(rootPath,relPath.replace(/^\/+/,''));
+    }
     let relUrl = path.relative(rootPath,absPath).replace(/\\/g,'/') || '';
     let paths = relUrl.split('/');
     relPath.split('/').some(function (p) {

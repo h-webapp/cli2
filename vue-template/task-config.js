@@ -26,8 +26,7 @@ var buildConfig = {
     copyTasks: function () {
         return [
             copyLangTask(),
-            copyCssTask(),
-            copyVendorTask()
+            copyCssTask()
         ];
     }
 };
