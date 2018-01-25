@@ -28,7 +28,7 @@ function extractFileUrl(files,rootFile){
     files = [].concat(files);
     files.forEach(function (file) {
 
-        if(!fs.existsSync(file)){
+        if(!fs.existsSync(file) || !fs.statSync(file).isFile()){
             return;
         }
         if(resources.has(file)){

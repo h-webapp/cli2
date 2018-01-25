@@ -53,7 +53,7 @@ function copyFile(file,fileConfig){
     stream = stream.pipe(gulp.dest(distDir));
     return stream;
 }
-gulp.task('copy',function () {
+gulp.task('copy',['clean'],function () {
     var validFiles = {};
     buildConfig.pages.forEach(function (page) {
 

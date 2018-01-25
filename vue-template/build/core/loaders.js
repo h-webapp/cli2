@@ -6,7 +6,7 @@ function cssLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
     var file = this.file;
-    var regexp = /(["'])\s*([^"']+\.css)\s*\1/g;
+    var regexp = /(["'])\s*([^"']+\.css)\s*\1/ig;
     content.replace(regexp, function (all,m1,src) {
 
         if(isAbsoluteUrl(src)){
@@ -25,7 +25,7 @@ function cssLoader(content,resources) {
 function jsLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.js)\s*\1/g;
+    var regexp = /(["'])\s*([^"']+\.js)\s*\1/ig;
     content.replace(regexp, function (all,m1,src) {
 
         if(isAbsoluteUrl(src)){
@@ -44,7 +44,7 @@ function jsLoader(content,resources) {
 function jsonLoader(content,resources){
     var _this = this;
     var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.json)\s*\1/g;
+    var regexp = /(["'])\s*([^"']+\.json)\s*\1/ig;
     content.replace(regexp, function (all,m1,src) {
 
         if(isAbsoluteUrl(src)){
@@ -63,7 +63,7 @@ function jsonLoader(content,resources){
 function htmlLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
-    var regexp = /(["'])\s*([^"']+\.(?:html|htm|tpl))\s*\1/g;
+    var regexp = /(["'])\s*([^"']+\.(?:html|htm|tpl))\s*\1/ig;
     content.replace(regexp, function (all,m1,src) {
 
         if(isAbsoluteUrl(src)){
@@ -83,7 +83,7 @@ function fileLoader(content,resources) {
     var _this = this;
     var rootFile = this.root;
     var page = this.page;
-    var regexp = /(["'])*(?:src|source|href|pre-url)\1\s*=\s*(["'])\s*([^"']+\.[\w]+)\s*\2/g;
+    var regexp = /(["'])*(?:src|source|href|pre-url)\1\s*=\s*(["'])\s*([^"']+)\s*\2/ig;
     content.replace(regexp, function (all,m1,m2,src) {
 
         if(isAbsoluteUrl(src)){
@@ -96,7 +96,6 @@ function fileLoader(content,resources) {
             dir = resolve(srcDir,dir,page.templateBasePath);
         }
         src = extractUrl(dir,src);
-
         _this.execute([src],rootFile);
         resources.set(src,{
             type:parseFileType(src) || 'file'
@@ -105,7 +104,7 @@ function fileLoader(content,resources) {
 }
 function cssFileLoader(content,resources){
 
-    var regexp = /\burl\s*\((["'])\s*([^"']+\.[\w]+)\s*\1\s*\)/g;
+    var regexp = /\burl\s*\((["']?)\s*([^"'()]+\.[^"'()]+)\s*\1\s*\)/ig;
     var file = this.file;
     content.replace(regexp, function (all,m1,src) {
 
@@ -114,7 +113,6 @@ function cssFileLoader(content,resources){
         }
         var urlInfo = URL.parse(src);
         src = urlInfo.pathname;
-
         var dir = path.dirname(file);
         src = extractUrl(dir,src);
         resources.set(src,{
