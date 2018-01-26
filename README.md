@@ -20,18 +20,11 @@
 ```
 ### build
 ```console
-    //build develop
-    gulp buildDev
-    //build release
-    gulp buildRelease
-    //build all
-    gulp build
-    //clean develop
-    gulp cleanDev
-    //clean release
-    gulp cleanRelease
-    //clean all
-    gulp clean
+   npm run build
+   //只编译webpack
+   npm run compile
+   //clean
+   npm run clean
 ```
 ### 帮助
 h-application是一个快速搭建web应用的cli,框架主要基于模块和应用，模块和应用中包含组件、指令、依赖的资源，每个模块和应用可分布式部署，
