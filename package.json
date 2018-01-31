@@ -1,6 +1,6 @@
 {
   "name": "h-application",
-  "version": "2.0.22",
+  "version": "2.0.23",
   "description": "web,web-application,application,module,web-module",
   "bin": "./bin/h-application.js",
   "directories": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/h-webapp/cli.git"
+    "url": "git+https://github.com/h-webapp/cli2.git"
   },
   "author": "kouyjes",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/h-webapp/cli/issues"
+    "url": "https://github.com/h-webapp/cli2/issues"
   },
-  "homepage": "https://github.com/h-webapp/cli#readme",
+  "homepage": "https://github.com/h-webapp/cli2#readme",
   "devDependencies": {
     "webpack-hot-middleware": "^2.21.0"
   }
