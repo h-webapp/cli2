@@ -2,6 +2,9 @@ import { Module,Application,ResourceLoader,Register } from 'webapp-core';
 var body = document.body;
 var loadingTimeout,loadingCount = 0;
 var a;
+function isAbsoluteUrl(src){
+    return /^(https*|file):\/\//i.test(src);
+}
 function isResource(data){
     if(!a){
         a = document.createElement('a');
@@ -103,6 +106,12 @@ function initEnvironment(data){
     var environment = Module.module('env').getService('environment');
     environment.updateEnvironment(data);
 }
+function isNeedLoad(declare){
+    if(isAbsoluteUrl(declare.url)){
+        return true;
+    }
+    return declare.compile === false;
+}
 function LoadEnvironment(configPath) {
     var register = Register.getInstance();
     return ResourceLoader.load({
@@ -112,7 +121,7 @@ function LoadEnvironment(configPath) {
         var data = dataArray[0];
         var modules = [],_modules = [],apps = [],_apps = [];
         data.modules.forEach(function (m) {
-            if(m.compile === false || /^(https*|file):\/\//i.test(m.url)){
+            if(isNeedLoad(m)){
                 modules.push(m);
             }else{
                 _modules.push(m);
@@ -120,7 +129,7 @@ function LoadEnvironment(configPath) {
             return m.compile === false;
         });
         data.apps.forEach(function (app) {
-            if(app.compile === false || /^(https*|file):\/\//i.test(app.url)){
+            if(isNeedLoad(app)){
                 apps.push(app);
             }else{
                 _apps.push(app);
