@@ -112,37 +112,59 @@ function isNeedLoad(declare){
     }
     return declare.compile === false;
 }
-function LoadEnvironment(configPath) {
+function processEnvironmentData(data) {
     var register = Register.getInstance();
+    var modules = [],_modules = [],apps = [],_apps = [];
+    data.modules.forEach(function (m) {
+        if(isNeedLoad(m)){
+            modules.push(m);
+        }else{
+            _modules.push(m);
+        }
+        return m.compile === false;
+    });
+    data.apps.forEach(function (app) {
+        if(isNeedLoad(app)){
+            apps.push(app);
+        }else{
+            _apps.push(app);
+        }
+    });
+    register.modules(modules);
+    register.apps(apps);
+    return register.register().then(function () {
+        initModuleLoaderBaseURI(_modules);
+        initApplicationLoaderBaseURI(_apps);
+        initEnvironment(data);
+        return data;
+    });
+}
+function loadEnvironmentScript(configScriptPath) {
+    return ResourceLoader.load({
+        type:'text',
+        urls:[configScriptPath]
+    }).then(function (dataArray) {
+        var script = dataArray[0];
+        var module = {};
+        Function('module',script)(module);
+        return processEnvironmentData(module.exports);
+    });
+}
+function LoadEnvironmentJson(configPath) {
     return ResourceLoader.load({
         type:'json',
         urls:[configPath]
     }).then(function (dataArray) {
         var data = dataArray[0];
-        var modules = [],_modules = [],apps = [],_apps = [];
-        data.modules.forEach(function (m) {
-            if(isNeedLoad(m)){
-                modules.push(m);
-            }else{
-                _modules.push(m);
-            }
-            return m.compile === false;
-        });
-        data.apps.forEach(function (app) {
-            if(isNeedLoad(app)){
-                apps.push(app);
-            }else{
-                _apps.push(app);
-            }
-        });
-        register.modules(modules);
-        register.apps(apps);
-        return register.register().then(function () {
-            initModuleLoaderBaseURI(_modules);
-            initApplicationLoaderBaseURI(_apps);
-            initEnvironment(data);
-            return data;
-        });
+        return processEnvironmentData(data);
     });
-};
+}
+function LoadEnvironment(configPath,type) {
+    if(type === 'json' || /\.json$/i.test(configPath)){
+        return LoadEnvironmentJson(configPath);
+    }else if(type === 'js' || /\.js$/i.test(configPath)){
+        return loadEnvironmentScript(configPath);
+    }
+    throw new TypeError('config type is invalid !');
+}
 export default LoadEnvironment;
