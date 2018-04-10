@@ -5,14 +5,8 @@ const MIME = require('mime');
 var buildConfig = require('../build.config');
 const webpackRunner = require('./webpack-runner');
 const pendingFile = path.resolve(__dirname,'./pending.html');
-var appConfigMap = {};
 var templateMap = {};
 buildConfig.pages.forEach(function (page) {
-    var envConfig = page.envConfig;
-    if(envConfig){
-        let relativePath = httpPath(envConfig);
-        appConfigMap[relativePath] = page;
-    }
     var template = page.template;
     if(template){
         let relativePath = httpPath(template);
@@ -25,16 +19,6 @@ function httpPath(absPath) {
     var relativePath = path.relative(srcDir,absPath);
     relativePath = relativePath.replace(/\\/g,'/');
     return relativePath;
-}
-function outputAppConf(response,pathname) {
-
-    var page = appConfigMap[pathname];
-    var json = readFileSync(page.envConfig);
-    var config = JSON.parse(json);
-
-    delete config.main;
-    delete config.init;
-    response.outputContent(getMime(page.envConfig),JSON.stringify(config),null,4);
 }
 function outputTemplate(response,pathname) {
     var page = templateMap[pathname];
@@ -88,10 +72,6 @@ function output(chain,request,response) {
             relativePath += 'index.html';
         }
 
-        if(appConfigMap[relativePath]){
-            outputAppConf(response,relativePath);
-            return true;
-        }
         if(templateMap[relativePath]){
             outputTemplate(response,relativePath);
             return true;
