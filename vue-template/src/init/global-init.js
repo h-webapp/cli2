@@ -1,13 +1,13 @@
 import { Module,Application,define,constant,Loader,ResourceLoader } from 'webapp-core';
 import { ApplicationExtend } from './application-extend';
-import { Promise } from 'promise-deferred-sim';
+import { $Promise } from 'promise-deferred-sim';
 import Vue from 'vue'
 
 var versionConfig = require('../../build/version/version');
 Loader.GlobalParam = Loader.GlobalParam || {};
 Loader.GlobalParam.version = versionConfig.version;
 if(!window.Promise){
-    window.Promise = HERE.$Promise;
+    window.Promise = $Promise;
 }
 function initVariable(name,value) {
     var names = name.split('.');
