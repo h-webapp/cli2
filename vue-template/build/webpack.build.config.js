@@ -61,7 +61,7 @@ buildConfig.pages.map(function (page) {
             resources.push(path.resolve(baseDir,app.url));
         }
     });
-    resources = resources.concat(main);
+    resources = main.concat(resources);
     chunks.push(addEntryFile(page,Constant.SYSTEM_MAIN,resources));
     if(init.length > 0){
         chunks.push(addEntryFile(page,Constant.SYSTEM_INIT,init));
