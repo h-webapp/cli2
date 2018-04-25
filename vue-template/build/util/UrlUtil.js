@@ -2,7 +2,7 @@ const path = require('path');
 const srcDir = require('./SrcDir');
 var contextDir = path.resolve(__dirname,'../../');
 function isAbsoluteUrl(src){
-    return /^(https*|file):\/\//i.test(src);
+    return /^((\/{1})*https*|file):\/\//i.test(src);
 }
 function isNodeModuleUrl(src){
     return /\b\/?node_modules\b/.test(src);
