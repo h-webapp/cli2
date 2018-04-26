@@ -3,7 +3,6 @@ module.exports = {
         production:false,
         minimize:false,
         hotReplace:true,
-        sourceMap:false,
-        extractCss:false
+        sourceMap:false
     }
 };

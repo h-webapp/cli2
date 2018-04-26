@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>new</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div v-cloak id="main-app" class="main">
+        <nav class="nav">
+            <router-link to="/search">search</router-link>
+            <router-link to="/cube-search">cube-search</router-link>
+
+            <router-link to="/browse">浏览</router-link>
+            <router-link to="/info-dialog">提示对话框</router-link>
+
+            <router-link to="/menu">环形菜单</router-link>
+            <router-link to="/analysis">依赖关系</router-link>
+
+            <div>
+                <a target="_blank" href="core/base/annular-menu/example/index.html">menu Demo</a>
+                <a target="_blank" href="core/base/annular-menu/example/index-default.html">menu Demo(default)</a>
+                <a target="_blank" href="sys/index.html">structure</a>
+            </div>
+        </nav>
+        <div class="content">
+            <router-view></router-view>
+        </div>
+    </div>
+</body>
+</html>

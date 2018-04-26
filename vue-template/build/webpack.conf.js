@@ -4,8 +4,11 @@ var merge = require('webpack-merge')
 const Constant = require('./constant');
 const srcDir = require('./util/SrcDir');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var config = require('./runtime').config;
-
+var buildConfig = require('./build.config');
+var resourceRules = require('./resource-loader').rules;
+function assetsPath(_path){
+    return path.posix.join(buildConfig.resourceDir, _path);
+}
 function baseConfig() {
     var _baseConfig = {
         context:__dirname + '/src',
@@ -19,14 +22,6 @@ function baseConfig() {
         },
         module:{
             rules:[
-                {
-                    test:/\.css$/,
-                    use:[
-                        'style-loader',
-                        'css-loader',
-
-                    ]
-                },
                 require('./vue-loader').loader,
                 {
                     test: /\.js$/,
@@ -40,29 +35,26 @@ function baseConfig() {
                             "syntax-dynamic-import"
                         ]
                     }
-                }
+                },
+                ...resourceRules
             ]
         },
         plugins:[
             new webpack.optimize.CommonsChunkPlugin({
                 name: Constant.SYSTEM_COMMON
             }),
-            new webpack.optimize.ModuleConcatenationPlugin()
+            new webpack.optimize.ModuleConcatenationPlugin(),
+            new ExtractTextPlugin({
+                filename: assetsPath('css/[name].css')
+            })
         ]
     };
-    if(config.extractCss){
-        _baseConfig.plugins.push(new ExtractTextPlugin({
-            filename: 'style.css'
-        }));
-    }
     return _baseConfig;
 }
 
 module.exports = function(){
    var config = baseConfig();
    return merge(config,{
-       module: {
-           rules: require('./css-loader').loaders
-       }
+       module: {}
    });
 };

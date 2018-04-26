@@ -6,7 +6,6 @@ var config = Object.assign(runtime.config,{
     minimize:true,
     hotReplace:false,
     sourceMap:false,
-    extractCss:true,
     outputDir:path.resolve(srcDir,'../release')
 });
 runtime.config = Object.assign(runtime.config,config);
