@@ -17,6 +17,7 @@ exports.loader = {
     loader: 'vue-loader',
     options: {
         loaders:cssLoaders(),
+        extractCSS:true,
         transformToRequire: {
             video: ['src', 'poster'],
             source: 'src',
