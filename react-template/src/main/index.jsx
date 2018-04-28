@@ -33,7 +33,7 @@ function main() {
     });
     var Comp = <div>test</div>;
     const history = createBrowserHistory();
-    
+
     var instance = render((
         <HashRouter>
             <Switch>
