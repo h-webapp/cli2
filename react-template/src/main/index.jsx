@@ -1,7 +1,8 @@
 import { Module,Application,constant } from 'webapp-core';
-import Vue from 'vue';
-import Router from 'vue-router';
-Vue.use(Router);
+import React from 'react';
+import { render } from 'react-dom';
+import { HashRouter,Router,Switch } from 'react-router-dom';
+import createBrowserHistory from 'history/createBrowserHistory'
 
 function main() {
     var routes = [];
@@ -10,11 +11,9 @@ function main() {
         route.path = routeOption.path;
         route.name = routeOption.name;
         route.redirect = routeOption.redirect;
-        route.component = routeOption.component || {
-            template:'<span>empty component</span>'
-        };
+        route.component = routeOption.component;
         if(routeOption.children && routeOption.children.length > 0){
-            route.children = routeOption.children.map(function (child) {
+            route.childRoutes = routeOption.children.map(function (child) {
                 return buildRoute(child);
             });
         }
@@ -24,7 +23,7 @@ function main() {
         var route;
         if(app.route && app.route.path){
             route = buildRoute(app.route);
-            route.beforeEnter = function (to,from,next) {
+            route.onEnter = function (next) {
                 app.load().then(function () {
                     next();
                 });
@@ -32,14 +31,17 @@ function main() {
             routes.push(route);
         }
     });
-    var router = new Router({
-        routes:routes
-    });
-    var vueInstance = new Vue({
-        el:'#main-app',
-        router
-    });
-    constant('main',vueInstance);
-    return vueInstance;
+    var Comp = <div>test</div>;
+    const history = createBrowserHistory();
+    
+    var instance = render((
+        <HashRouter>
+            <Switch>
+                <Router histor={history} path='/' component={Comp}></Router>
+            </Switch>
+        </HashRouter>
+    ), document.querySelector('#main-app>.content'))
+    constant('main',instance);
+    return instance;
 }
 export default main;

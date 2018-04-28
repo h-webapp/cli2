@@ -8,8 +8,7 @@
   "apps":[
     {"name":"system","url":"app/system/index.js"},
     {"name":"search","url":"app/search/index.js"},
-    {"name":"org","url":"app/org/index.js"},
-    {"name":"comp","url":"app/comp/index.js"}
+    {"name":"org","url":"app/org/index.js"}
   ],
   "init":["init/index.js"],
   "main":["login/login.js"],

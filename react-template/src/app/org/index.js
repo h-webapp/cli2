@@ -4,4 +4,4 @@ Application.app('org', function () {
         js:[],
         css:[]
     };
-},[],'cube-search');
+},[]);

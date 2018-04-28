@@ -10,14 +10,14 @@
 <body>
     <div v-cloak id="main-app" class="main">
         <nav class="nav">
-            <router-link to="/search">search</router-link>
-            <router-link to="/cube-search">cube-search</router-link>
+            <a href="#/search">search</a>
+            <a href="/cube-search">cube-search</a>
 
-            <router-link to="/browse">浏览</router-link>
-            <router-link to="/info-dialog">提示对话框</router-link>
+            <a href="/browse">浏览</a>
+            <a href="/info-dialog">提示对话框</a>
 
-            <router-link to="/menu">环形菜单</router-link>
-            <router-link to="/analysis">依赖关系</router-link>
+            <a href="/menu">环形菜单</a>
+            <a href="/analysis">依赖关系</a>
 
             <div>
                 <a target="_blank" href="core/base/annular-menu/example/index.html">menu Demo</a>
@@ -26,7 +26,7 @@
             </div>
         </nav>
         <div class="content">
-            <router-view></router-view>
+
         </div>
     </div>
 </body>
