@@ -1,8 +1,7 @@
 import { Module,Application,constant } from 'webapp-core';
 import React from 'react';
 import { render } from 'react-dom';
-import { HashRouter,Router,Switch } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory'
+import { HashRouter,Route,Switch } from 'react-router-dom';
 
 function main() {
     var routes = [];
@@ -31,14 +30,17 @@ function main() {
             routes.push(route);
         }
     });
-    var Comp = <div>test</div>;
-    const history = createBrowserHistory();
+    var Comp = function () {
+        return (
+            <div>test</div>
+        );
+    };
 
     var instance = render((
         <HashRouter>
-            <Switch>
-                <Router histor={history} path='/' component={Comp}></Router>
-            </Switch>
+            <div>
+                <Route  path='/' component={Comp}></Route>
+            </div>
         </HashRouter>
     ), document.querySelector('#main-app>.content'))
     constant('main',instance);

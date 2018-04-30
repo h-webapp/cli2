@@ -7,9 +7,6 @@ body, html {
   overflow: hidden;
   font-family: "Microsoft YaHei"; }
 
-[v-cloak] {
-  display: none !important; }
-
 @keyframes main-enter {
   0% {
     transform: scaleY(0.3);
