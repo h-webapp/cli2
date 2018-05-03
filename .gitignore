@@ -8,6 +8,3 @@
 /vue-template/src/chunks
 /vue-template/release
 /react-template/node_modules
-/package-lock.json
-/vue-template/package-lock.json
-/react-template/package-lock.json
