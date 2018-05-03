@@ -1,9 +1,9 @@
 (function (Application) {
     Application.app('system', function () {
-        this.route = {
+       /* this.route = {
             path:'/',
             redirect:'search'
-        };
+        };*/
         this.resource = {
             js:['service/loginService.js'],
             css:[]

@@ -5,7 +5,7 @@
         var loginService = app.getService('loginService');
         var langService = app.getService('language');
         Vue.component('cube-search-comp',{
-            template:'<span><span>{{homepage}}</span>-cube search app,current user:{{loginInfo.userName}}</span>',
+            template:'<div><span>{{homepage}}</span>-cube search app,current user:{{loginInfo.userName}}</div>',
             data: function () {
                 return {
                     loginInfo:{

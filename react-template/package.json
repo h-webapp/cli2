@@ -63,8 +63,6 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "dom-resource-loader": "^1.0.32",
-    "injector-ioc": "^1.1.8",
     "jquery": "^3.2.1",
     "lz-string": "^1.4.4",
     "promise-deferred-sim": "^1.0.8",
@@ -72,6 +70,6 @@
     "react-dom": "^16.3.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "webapp-core": "^1.0.35"
+    "webapp-core": "^1.0.36"
   }
 }

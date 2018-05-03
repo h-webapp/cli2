@@ -1,9 +1,11 @@
 import { Application } from 'webapp-core';
-import SearchComp from './comp/search-comp';
+import SearchComp from './comp/SearchComp';
 Application.app('search', function () {
     this.route = {
         path:'/search',
-        component:SearchComp
+        component:SearchComp,
+        exact:true,
+        strict:true
     };
     this.resource = {
         js:[],

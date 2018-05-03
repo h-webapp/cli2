@@ -38,48 +38,6 @@ body, html {
 .main {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  animation: main-enter 0.4s;
-  -webkit-animation: main-enter 0.4s;
-  -moz-animation: main-enter 0.4s;
-  -ms-animation: main-enter 0.4s;
-  -o-animation: main-enter 0.4s; }
-  .main .nav {
-    width: 20%;
-    padding: 10px;
-    background-color: #2f2f2f;
-    font-size: 1.3rem; }
-    .main .nav > div {
-      margin-top: 100px; }
-    .main .nav > * {
-      border-radius: .15em; }
-    .main .nav a {
-      text-decoration: none;
-      margin-top: 10px;
-      display: block;
-      padding: 5px;
-      color: #fff;
-      border-bottom: 1px solid #5d4f4f; }
-      .main .nav a:hover {
-        border-color: #cebfbf; }
-      .main .nav a.router-link-exact-active {
-        color: #000;
-        background-color: #ccc; }
-  .main .content {
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    background-color: #dde6ea;
-    color: #2025e8; }
-    .main .content > * {
-      animation: main-enter-text 0.6s;
-      -webkit-animation: main-enter-text 0.6s;
-      -moz-animation: main-enter-text 0.6s;
-      -ms-animation: main-enter-text 0.6s;
-      -o-animation: main-enter-text 0.6s; }
+  overflow: hidden; }
 
 /*# sourceMappingURL=index.css.map */

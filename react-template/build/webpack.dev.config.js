@@ -7,6 +7,7 @@ var config = require('./runtime').config;
 var wpkConfigs = require('./webpack.build.config');
 wpkConfigs.forEach(function (wpkConfig,index) {
 
+    wpkConfig.devtool = 'eval-source-map';
     var plugins = wpkConfig.plugins;
     var entry = wpkConfig.entry;
     if(config.hotReplace && index === 0){
