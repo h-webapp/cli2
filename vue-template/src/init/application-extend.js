@@ -20,7 +20,7 @@ Application.prototype.component = function (id,definition) {
         delete definition['templateUrl'];
         delete definition['cssUrl'];
         delete definition['depResource'];
-        if(!templateUrl && !cssUrl){
+        if(!templateUrl && !cssUrl && !depResource){
             return Vue.component.apply(Vue,arguments);
         }
 
