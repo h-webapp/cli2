@@ -28,7 +28,7 @@ function outputTemplate(response,pathname) {
     response.outputContent(getMime(page.template),content);
 }
 function getMime(absPath) {
-    var mime = MIME.lookup(path.basename(absPath));
+    var mime = MIME.getType(path.basename(absPath));
     if (!mime) {
         mime = 'text/html';
     }
