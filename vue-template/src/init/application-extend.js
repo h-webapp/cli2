@@ -4,9 +4,6 @@ Application.component = function (id,definition) {
     if(definition === void 0){
         return function (resolve) {
             var def = Vue.component(id);
-            if(typeof def === 'function'){
-                return def(resolve);
-            }
             return resolve(def);
         };
     }
