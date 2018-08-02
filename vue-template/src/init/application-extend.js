@@ -59,6 +59,10 @@ Application.prototype.component = function (id,definition) {
                     definition.template = dataArray.shift()[0];
                 }
                 resolve(definition);
+                definition.template = '';
+                delete definition.templateUrl;
+                delete definition.cssUrl;
+                delete definition.depResource;
             });
         };
         return Vue.component(id,callback);
