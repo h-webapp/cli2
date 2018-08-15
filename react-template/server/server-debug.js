@@ -21,6 +21,9 @@ watch.watchTree(serverConfDir, reStartServer);
 
 var buildConfig = require('../build/build.config');
 buildConfig.pages.forEach(function (page) {
+    if(!page.envConfig){
+        return;
+    }
     fs.watchFile(page.envConfig, function () {
         reStartServer();
     });
