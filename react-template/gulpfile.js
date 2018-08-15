@@ -57,25 +57,25 @@ gulp.task('copy',['clean'],function () {
     var validFiles = {};
     buildConfig.pages.forEach(function (page) {
 
-        var envConfig = require(page.envConfig);
-
-        validFiles[page.envConfig] = {
-            type:'json'
-        };
-
         var allDeclares = [];
-        envConfig.modules.concat(envConfig.apps).forEach(function (declare) {
-            if(isAbsoluteUrl(declare.url)){
-                return;
-            }
-            let file = path.resolve(srcDir,declare.url);
-            if(declare.compile === false){
-                validFiles[file] = {
-                    type:'js'
-                };
-            }
-            allDeclares.push(file);
-        });
+        if(page.envConfig){
+            let envConfig = require(page.envConfig);
+            validFiles[page.envConfig] = {
+                type:'json'
+            };
+            envConfig.modules.concat(envConfig.apps).forEach(function (declare) {
+                if(isAbsoluteUrl(declare.url)){
+                    return;
+                }
+                let file = path.resolve(srcDir,declare.url);
+                if(declare.compile === false){
+                    validFiles[file] = {
+                        type:'js'
+                    };
+                }
+                allDeclares.push(file);
+            });
+        }
 
         var extractFn = extractFileUrl.bind(page);
         extractFn(allDeclares);

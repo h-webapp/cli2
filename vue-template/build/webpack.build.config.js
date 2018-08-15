@@ -29,9 +29,6 @@ function addEntryFile(page,key,files){
     return key;
 }
 buildConfig.pages.map(function (page) {
-    var envConfig = require(page.envConfig);
-
-    var apps = envConfig.apps,modules = envConfig.modules;
 
     var baseDir = srcDir;
     if(page.template){
@@ -41,32 +38,37 @@ buildConfig.pages.map(function (page) {
 
         }
     }
-    var main = ensureArray(envConfig.main).map(function (file) {
-        return path.resolve(baseDir,file);
-    });
-    var init = ensureArray(envConfig.init).map(function (file) {
-        return path.resolve(baseDir,file);
-    });
-    var resources = [];
 
     var chunks = [];
 
-    modules.forEach(function (m) {
-        if(m.compile !== false && !isAbsoluteUrl(m.url)){
-            resources.push(path.resolve(baseDir,m.url));
-        }
-    });
-    apps.forEach(function (app) {
-        if(app.compile !== false && !isAbsoluteUrl(app.url)){
-            resources.push(path.resolve(baseDir,app.url));
-        }
-    });
-    resources = main.concat(resources);
-    chunks.push(addEntryFile(page,Constant.SYSTEM_MAIN,resources));
-    if(init.length > 0){
-        chunks.push(addEntryFile(page,Constant.SYSTEM_INIT,init));
-    }
+    if(page.envConfig){
+        let envConfig = require(page.envConfig);
+        let apps = envConfig.apps,modules = envConfig.modules;
 
+        let main = ensureArray(envConfig.main).map(function (file) {
+            return path.resolve(baseDir,file);
+        });
+        let init = ensureArray(envConfig.init).map(function (file) {
+            return path.resolve(baseDir,file);
+        });
+        let resources = [];
+
+        modules.forEach(function (m) {
+            if(m.compile !== false && !isAbsoluteUrl(m.url)){
+                resources.push(path.resolve(baseDir,m.url));
+            }
+        });
+        apps.forEach(function (app) {
+            if(app.compile !== false && !isAbsoluteUrl(app.url)){
+                resources.push(path.resolve(baseDir,app.url));
+            }
+        });
+        resources = main.concat(resources);
+        chunks.push(addEntryFile(page,Constant.SYSTEM_MAIN,resources));
+        if(init.length > 0){
+            chunks.push(addEntryFile(page,Constant.SYSTEM_INIT,init));
+        }
+    }
 
     if(page.template){
         let filename = path.relative(srcDir,page.template).replace(/\\/g,'/');
