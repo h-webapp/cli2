@@ -1,7 +1,14 @@
 (function (Module) {
     Module.module('http').service('httpService', ['environment',function (environment) {
+        function isAbsoluteUrl(src){
+            return /^(https*|file):\/{2}|^\/{2}/i.test(src);
+        }
         var $ = jQuery;
         var pathParamReg = new RegExp('\{([^/{}]+)\}','g');
+        var requestCache = {};
+        var requestTimeoutId = 1;
+        var _requestIdKey = '$requestId';
+        var _globalRequestIdKey = '$globalRequestId';
         function ensureStartsWith(url){
             if(!url){
                 return '';
@@ -15,6 +22,18 @@
             beforeSend:[],
             complete:[],
             error:[]
+        };
+        this.requestIdKey = function(key){
+            if(arguments.length === 0){
+                return _requestIdKey;
+            }
+            _requestIdKey = key;
+        };
+        this.globalRequestIdKey = function(key){
+            if(arguments.length === 0){
+                return _globalRequestIdKey;
+            }
+            _globalRequestIdKey = key;
         };
         this.addEventListener = function (type,handler) {
             if(typeof handler !== 'function'){
@@ -92,7 +111,21 @@
             return a.href;
         };
         this.request = function (request) {
-            var url = this.getRequestUrl(request.url,request.pathParams,request.queryParams);
+            var queryParams = request.queryParams || {};
+            var globalRequestId = queryParams[_globalRequestIdKey];
+            var requestId = globalRequestId || queryParams[_requestIdKey];
+            delete queryParams[_requestIdKey];
+            delete queryParams[_globalRequestIdKey];
+
+            var url = isAbsoluteUrl(request.url) ? request.url : this.getRequestUrl(request.url,request.pathParams,request.queryParams);
+            var currentTimeoutId;
+            if(requestId){
+                if(!globalRequestId){
+                    requestId = url + '_' + requestId;
+                }
+                currentTimeoutId = requestTimeoutId++;
+                requestCache[requestId] = currentTimeoutId;
+            }
 
             var method = request.method;
             if(!method){
@@ -107,30 +140,38 @@
             if(data){
                 data = JSON.stringify(data);
             }
-            return $.ajax({
-                method:method,
-                url:url,
-                cache:false,
-                async:async,
-                beforeSend: function () {
-                    this.executeEventHandler('beforeSend',arguments,this);
-                }.bind(this),
-                complete: function () {
-                    this.executeEventHandler('complete',arguments,this);
-                }.bind(this),
-                error: function () {
-                    this.executeEventHandler('error',arguments,this);
-                }.bind(this),
-                headers:request.headers,
-                dataType:request.dataType,
-                contentType:request.contentType,
-                data:data
-            }).then(function (data) {
-                return data;
-            }, function (data) {
-                this.executeEventHandler('error',arguments,this);
-                throw data;
-            }.bind(this));
+
+            var _this = this;
+            var promise = new Promise(function(resolve,reject){
+                $.ajax({
+                    method:method,
+                    url:url,
+                    cache:false,
+                    async:async,
+                    beforeSend: function () {
+                        _this.executeEventHandler('beforeSend',arguments,_this);
+                    },
+                    complete: function () {
+                        _this.executeEventHandler('complete',arguments,_this);
+                    },
+                    error: function () {
+                        _this.executeEventHandler('error',arguments,_this);
+                    },
+                    headers:request.headers,
+                    dataType:request.dataType,
+                    contentType:request.contentType,
+                    data:data
+                }).then(function (data) {
+                    if(currentTimeoutId && requestCache[requestId] !== currentTimeoutId){
+                        return;
+                    }
+                    resolve(data);
+                }, function (data) {
+                    _this.executeEventHandler('error',arguments,_this);
+                    reject(data);
+                });
+            });
+            return promise;
         };
         this.get = function (url,pathParams,queryParams) {
             var request = {
@@ -173,6 +214,44 @@
                 queryParams:queryParams
             };
             return this.request(request);
+        };
+        this.send = function(option){
+            var xhr = new XMLHttpRequest();
+            var url = option.url;
+            if(!isAbsoluteUrl(url)){
+                url = this.getRequestUrl(option.url,option.pathParams,option.queryParams)
+            }
+            option._xhr = xhr;
+            return new Promise(function(resolve,reject){
+                try{
+                    xhr.open(option.method,url,true);
+                    if(typeof option.responseType ==='string'){
+                        xhr.responseType = option.responseType;
+                    }
+                    if(typeof option.responseType ==='string'){
+                        xhr.setRequestHeader('Content-Type',option.contentType);
+                    }
+                    if(typeof option.onprogress === 'function'){
+                        xhr.onprogress = option.onprogress;
+                    }
+                    xhr['onreadystatechange'] = () => {
+                        if(xhr.readyState !== 4){
+                            return;
+                        }
+                        var status = xhr.status;
+                        var isSuccess = status >= 200 && status < 300 || status === 304;
+                        if(isSuccess){
+                            resolve(xhr);
+                        }else{
+                            reject(xhr);
+                        }
+                    }
+                    xhr.send(option.body);
+                }catch(e){
+                    console.error(e);
+                    reject && reject(e);
+                }
+            });
         };
     }]);
 })(HERE.FRAMEWORK.Module);

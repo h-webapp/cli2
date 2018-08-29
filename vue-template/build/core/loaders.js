@@ -51,7 +51,7 @@ function jsonLoader(content,resources){
             return all;
         }
         var urlInfo = URL.parse(src);
-        src = urlInfo.pathname;
+        src = urlInfo.pathname || '';
         var dir = path.dirname(rootFile);
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
@@ -70,7 +70,7 @@ function htmlLoader(content,resources) {
             return all;
         }
         var urlInfo = URL.parse(src);
-        src = urlInfo.pathname;
+        src = urlInfo.pathname || '';
         var dir = path.dirname(rootFile);
         src = extractUrl(dir,src);
         _this.execute([src],rootFile);
@@ -90,7 +90,7 @@ function fileLoader(content,resources) {
             return all;
         }
         var urlInfo = URL.parse(src);
-        src = urlInfo.pathname;
+        src = urlInfo.pathname || '';
         var dir = path.dirname(page.template);
         if(page.templateBasePath){
             dir = resolve(srcDir,dir,page.templateBasePath);
@@ -112,7 +112,7 @@ function cssFileLoader(content,resources){
             return all;
         }
         var urlInfo = URL.parse(src);
-        src = urlInfo.pathname;
+        src = urlInfo.pathname || '';
         var dir = path.dirname(file);
         src = extractUrl(dir,src);
         resources.set(src,{
