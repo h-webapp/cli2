@@ -1,7 +1,7 @@
-var config = require('../runtime').config;
-var execute = function (chain) {
+const config = require('../runtime').config;
+let execute = function (chain) {
     chain.next();
-}
+};
 if(config.hotReplace){
     const webpackRunner = require('./webpack-runner');
     const compiler = webpackRunner.compiler;

@@ -1,22 +1,42 @@
 const fs = require('fs');
 const path = require('path');
-var _resources = new Map();
-var resources = {
-    set:function (key,value) {
-        return _resources.set(key,value);
+const _resources = new Map();
+let _resourcesRel = {};
+let concatItems = [];
+let processed = new Map();
+const resources = {
+    set: function (key, value) {
+        let count = _resourcesRel[key] || 1;
+        if (this.has(key)) {
+            count++;
+        }
+        _resourcesRel[key] = count;
+        return _resources.set(key, value);
     },
-    get:function (key) {
+    remove: function (key) {
+        _resources.delete(key);
+    },
+    get: function (key) {
         return _resources.get(key);
     },
-    has:function (key) {
+    has: function (key) {
         return _resources.has(key);
     },
-    entries:function () {
+    entries: function () {
         return _resources.entries();
+    },
+    getResourceRel: function () {
+        return Object.assign({}, _resourcesRel);
+    },
+    getConcatItems: function () {
+        return concatItems;
+    },
+    addConcatItem: function (concat) {
+        concatItems.push(concat);
     }
 };
-var parseLoaders = require('./loaders');
-var buildConfigFile = path.resolve(__dirname,'../../task-config.js');
+let parseLoaders = require('./loaders');
+const buildConfigFile = path.resolve(__dirname, '../../task-config.js');
 if(fs.existsSync(buildConfigFile)){
     let _loaders = require(buildConfigFile).loaders() || [];
     parseLoaders = parseLoaders.concat(_loaders);
@@ -24,17 +44,18 @@ if(fs.existsSync(buildConfigFile)){
 
 function extractFileUrl(files,rootFile){
 
-    var page = this;
+    const page = this;
     files = [].concat(files);
     files.forEach(function (file) {
 
+        if(processed.has(file)){
+            return;
+        }
+        processed.set(file,true);
         if(!fs.existsSync(file) || !fs.statSync(file).isFile()){
             return;
         }
-        if(resources.has(file)){
-            return;
-        }
-        var content = fs.readFileSync(file).toString();
+        const content = fs.readFileSync(file).toString();
         parseLoaders.forEach(function (loader) {
             if(!file.match(loader.fileRule)){
                 return;

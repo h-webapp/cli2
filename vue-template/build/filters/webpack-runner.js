@@ -1,10 +1,10 @@
-var config = require('../../build/webpack.dev.config.js');
+const config = require('../../build/webpack.dev.config.js');
 const webpack = require('webpack');
 const MemoryFS = require("memory-fs");
 const fs = new MemoryFS();
 const compiler = webpack(config);
 compiler.outputFileSystem = fs;
-var finished = false;
+let finished = false;
 compiler.run(function (err) {
     finished = true;
     if(!err){
