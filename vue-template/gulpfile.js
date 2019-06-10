@@ -5,7 +5,7 @@ const gulpMerge = require('merge-stream');
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const cleanCSS = require('gulp-clean-css');
-let replace = require('gulp-replace');
+
 const babel = require('gulp-babel');
 const del = require('del');
 const config = require('./build/runtime.pro').config;
@@ -14,7 +14,9 @@ const buildConfig = require('./build/build.config');
 const fs = require('fs');
 const {isNodeModuleUrl,parseFileType,isAbsoluteUrl} = require('./build/util/UrlUtil');
 const extractFileUrl = require('./build/core/resource-extract');
+let contentProcess = require('./build/gulp/content-process');
 const taskConfig = require('./task-config');
+const compiledEntries = new Map();
 gulp.task('clean', function() {
     return del.sync([config.outputDir]);
 });
@@ -41,13 +43,13 @@ function copyFile(file,fileConfig){
                 babelrc: false,
                 presets: [[ "es2015", { modules: false } ]],
                 plugins: []
-            }))/*.pipe(uglify({
+            })).pipe(uglify({
                 compress:{
                     drop_console:true,
                     unused:true,
                     dead_code:true
                 }
-            }));*/
+            }));
         }
     }else if(fileType === 'css'){
         stream = stream.pipe(cleanCSS());
@@ -59,21 +61,34 @@ function copyFile(file,fileConfig){
     stream = stream.pipe(gulp.dest(distDir));
     return stream;
 }
+
+const fileContents = new Map(),concatMap = new Map();
+const concatItemMap = new Map();
+const extractContent = require('./build/gulp/concated-content');
+function getFileContent(file){
+    if(!concatMap.has(file.path)){
+        return file.contents;
+    }
+    let concatItem = concatMap.get(file.path);
+    let content = String(file.contents);
+    let result = concatResourceDep(concatItem,content);
+    return new Buffer(result);
+}
 function concatBlockItems(block) {
-    let stream = gulp.src(block.items);
+    let stream = gulp.src(block.items).pipe(extractContent(getFileContent));
     let type = block.type;
     if(type === 'js'){
         stream = stream.pipe(babel({
             babelrc: false,
             presets: [[ "es2015", { modules: false } ]],
             plugins: []
-        }))/*.pipe(uglify({
+        })).pipe(uglify({
                 compress:{
                     drop_console:true,
                     unused:true,
                     dead_code:true
                 }
-            }));*/
+            }));
     }else if(type === 'css'){
         stream = stream.pipe(cleanCSS());
     }
@@ -85,24 +100,45 @@ function concatBlockItems(block) {
     stream = stream.pipe(gulp.dest(distDir));
     return stream;
 }
+function concatResourceDep(concatItem,content){
+
+    if(fileContents.has(concatItem.file)){
+        return fileContents.get(concatItem.file);
+    }
+
+    let result = '';
+    let blocks = concatItem.blocks;
+    let left = 0;
+    blocks.forEach(function (block) {
+        let start = block.start,end = block.end;
+        result += content.substring(left,start);
+        result += "'" + block.output.rel + "'";
+        left = end;
+    });
+    result += content.substring(left);
+
+    fileContents.set(concatItem.file,result);
+    return result;
+}
 function concatFile(concatItem){
     let blocks = concatItem.blocks;
-    let stream = gulp.src(concatItem.file).pipe(replace(/^[\s\S]*$/,function (str) {
-        let result = '';
-        let left = 0;
-        blocks.forEach(function (block) {
-            let start = block.start,end = block.end;
-            result += str.substring(left,start);
-            result += "'" + block.output.rel + "'";
-            left = end;
+    let streams = [];
+    if(!concatItemMap.has(concatItem.file)){
+        let stream = gulp.src(concatItem.file).pipe(contentProcess(function (str) {
+            return concatResourceDep(concatItem,str);
+        }));
+        stream = stream.pipe(uglify({
+            compress:{
+                drop_console:true,
+                unused:true,
+                dead_code:true
+            }
+        })).on('error', function (err) {
+            console.error(err);
         });
-        result += str.substring(left);
-        return result;
-    }));
-
-    stream.pipe(gulp.dest(parseDistDir(concatItem.file)));
-
-    let streams = [stream];
+        stream.pipe(gulp.dest(parseDistDir(concatItem.file)));
+        streams.push(stream);
+    }
     let _blockSteams = blocks.map(function (block) {
         return concatBlockItems(block);
     });
@@ -111,10 +147,33 @@ function concatFile(concatItem){
 
     return streams;
 }
+function processConcat(resources){
+    let concatItems = resources.getConcatItems();
+    let resourceRel = resources.getResourceRel();
+    concatItems.forEach(function (item) {
+        if(compiledEntries.has(item.file)){
+            return;
+        }
+        concatMap.set(item.file,item);
+        resources.remove(item.file);
+        item.blocks.forEach(function (block) {
+            block.items.forEach(function (src) {
+                concatItemMap.set(src,true);
+                let count = resourceRel[src];
+                if(!count){
+                    return;
+                }
+                count--;
+                if(!count){
+                    resources.remove(src);
+                }
+            });
+        });
+    });
+}
 gulp.task('copy',['clean'],function () {
     const validFiles = {};
     buildConfig.pages.forEach(function (page) {
-
         const allDeclares = [];
         if(page.envConfig){
             let envConfig = require(page.envConfig);
@@ -130,6 +189,8 @@ gulp.task('copy',['clean'],function () {
                     validFiles[file] = {
                         type:'js'
                     };
+                }else{
+                    compiledEntries.set(file,true);
                 }
                 allDeclares.push(file);
             });
@@ -142,24 +203,17 @@ gulp.task('copy',['clean'],function () {
         }
     });
     let resources = extractFileUrl.resources;
-    let concatItems = resources.getConcatItems();
-    let resourceRel = resources.getResourceRel();
-    console.log(JSON.stringify(concatItems,null,4));
-    concatItems.forEach(function (item) {
-        resources.remove(item.file);
-        item.blocks.forEach(function (block) {
-            block.items.forEach(function (src) {
-                let count = resourceRel[src];
-                if(!count){
-                    return;
-                }
-                count--;
-                if(!count){
-                    resources.remove(src);
-                }
-            });
+
+    let concatSteams = [];
+    if(buildConfig.concat){
+        processConcat(resources);
+        concatSteams = resources.getConcatItems().filter(function (item) {
+            return !compiledEntries.has(item.file);
+        }).map(function (concatItem) {
+            return concatFile(concatItem);
         });
-    });
+    }
+
     const iterator = resources.entries();
     let entry;
     let streams = [];
@@ -172,8 +226,6 @@ gulp.task('copy',['clean'],function () {
         if(!fs.existsSync(file) || !fs.statSync(file).isFile()){
             continue;
         }
-
-
         streams.push(copyFile(file,fileConfig));
     }
 
@@ -181,9 +233,6 @@ gulp.task('copy',['clean'],function () {
         streams.push(copyFile(file,validFiles[file]));
     });
 
-    let concatSteams = concatItems.map(function (concatItem) {
-        return concatFile(concatItem);
-    });
     streams = streams.concat(concatSteams);
 
     streams = streams.concat(taskConfig.copyTasks());

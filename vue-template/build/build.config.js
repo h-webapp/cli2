@@ -2,6 +2,7 @@ const path = require('path');
 const srcDir = require('./util/SrcDir');
 module.exports = {
     resourceDir:'static',
+    concat:false,
     output:{
         filename:'[name].js',
         path:path.resolve(srcDir,'chunks'),
