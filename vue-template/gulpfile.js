@@ -238,5 +238,3 @@ gulp.task('copy',['clean'],function () {
     streams = streams.concat(taskConfig.copyTasks());
     return gulpMerge(streams);
 });
-
-gulp.run('copy')
