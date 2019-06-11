@@ -7,4 +7,7 @@
 /vue-template/node_modules
 /vue-template/src/chunks
 /vue-template/release
+/vue-template/build-src
+/react-template/release
+/react-template/build-src
 /react-template/node_modules

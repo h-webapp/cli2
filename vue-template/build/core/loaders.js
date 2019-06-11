@@ -1,6 +1,6 @@
 const path = require('path');
 const { extractUrl,parseFileType,resolve,isAbsoluteUrl } = require('../util/UrlUtil');
-const srcDir = require('../util/SrcDir');
+const srcDir = require('../util/SrcDir').get();
 const URL = require('url');
 let chunkCount = 0;
 function cssLoader(content,resources) {

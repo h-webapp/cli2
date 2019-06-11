@@ -1,2 +1,18 @@
 const path = require('path');
-module.exports = path.resolve(__dirname,'../../src');
+const srcPath = path.resolve(__dirname,'../../src');
+const buildSrcPath = path.resolve(__dirname,'../../build-src');
+let envMode = 'develop';
+module.exports = {
+    setMode(mode){
+        envMode = mode;
+    },
+    getSrc(){
+       return srcPath;
+    },
+    getBuildSrc(){
+        return buildSrcPath;
+    },
+    get(){
+        return envMode === 'release' ? buildSrcPath : srcPath;
+    }
+};

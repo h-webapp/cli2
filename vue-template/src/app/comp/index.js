@@ -3,12 +3,13 @@ Application.app('comp', function () {
     this.resource = {
         js:[
             'highlight/comp.js',
+            /*[[myChunk.js*/
             'select/comp.js',
             'nodes-graph/comp.js',
             'image/comp.js',
             'drag/comp.js',
             'map/comp.js',
-            'dropdown/comp.js',
+            'dropdown/comp.js'/*]]*/,
             'slider-block/comp.js'
         ],
         css:[]

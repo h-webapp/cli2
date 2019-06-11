@@ -1,6 +1,6 @@
 const path = require('path');
 const md5 = require('md5');
-const srcDir = require('./util/SrcDir');
+const srcDir = require('./util/SrcDir').get();
 const Constant = require('./constant');
 const buildConfig = require('./build.config');
 const baseConfig = require('./webpack.conf');

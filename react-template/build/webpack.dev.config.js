@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-const srcDir = require('./util/SrcDir');
+const srcDir = require('./util/SrcDir').get();
 var config = require('./runtime').config;
 var wpkConfigs = require('./webpack.build.config');
 wpkConfigs.forEach(function (wpkConfig,index) {

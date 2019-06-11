@@ -1,7 +1,8 @@
 const path = require('path');
-const srcDir = require('./util/SrcDir');
+const srcDir = require('./util/SrcDir').get();
 module.exports = {
     resourceDir:'static',
+    concat:true,
     output:{
         filename:'[name].js',
         path:path.resolve(srcDir,'chunks'),

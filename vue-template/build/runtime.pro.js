@@ -1,5 +1,5 @@
 const path = require('path');
-const srcDir = require('./util/SrcDir');
+const srcDir = require('./util/SrcDir').get();
 var runtime = require('./runtime');
 var config = Object.assign(runtime.config,{
     production:true,

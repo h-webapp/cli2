@@ -1,6 +1,6 @@
 const path = require('path');
 const { extractUrl,parseFileType,resolve,isAbsoluteUrl } = require('../util/UrlUtil');
-const srcDir = require('../util/SrcDir');
+const srcDir = require('../util/SrcDir').get();
 const URL = require('url');
 function cssLoader(content,resources) {
     var _this = this;

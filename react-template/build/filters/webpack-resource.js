@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const srcDir = require('../util/SrcDir');
+const srcDir = require('../util/SrcDir').get();
 const MIME = require('mime');
 var buildConfig = require('../build.config');
 const webpackRunner = require('./webpack-runner');

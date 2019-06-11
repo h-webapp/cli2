@@ -1,5 +1,7 @@
 const path = require('path');
-const srcDir = require('./util/SrcDir');
+const srcDirConfig = require('./util/SrcDir');
+srcDirConfig.setMode('release');
+const srcDir = srcDirConfig.get();
 var runtime = require('./runtime.pro');
 
 var config = runtime.config;

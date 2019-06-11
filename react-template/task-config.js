@@ -1,7 +1,7 @@
 const path = require('path');
 const gulp = require('gulp');
 const cleanCSS = require('gulp-clean-css');
-const srcDir = require('./build/util/SrcDir');
+const srcDir = require('./build/util/SrcDir').get();
 const config = require('./build/runtime').config;
 function copyLangTask(){
     var stream = gulp.src(srcDir + '/**/lang/*.json');

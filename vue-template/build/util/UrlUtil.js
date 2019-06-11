@@ -1,5 +1,5 @@
 const path = require('path');
-const srcDir = require('./SrcDir');
+const srcDir = require('./SrcDir').get();
 var contextDir = path.resolve(__dirname,'../../');
 function isAbsoluteUrl(src){
     return /^(https*|file):\/{2}|^\/{2}/i.test(src);

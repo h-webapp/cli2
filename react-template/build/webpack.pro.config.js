@@ -1,19 +1,21 @@
 const path = require('path');
-const srcDir = require('./util/SrcDir');
-var runtime = require('./runtime.pro');
+const srcDirConfig = require('./util/SrcDir');
+srcDirConfig.setMode('release');
+const srcDir = srcDirConfig.get();
+const runtime = require('./runtime.pro');
 
-var config = runtime.config;
-var wpkConfigs = require('./webpack.build.config');
+const config = runtime.config;
+const wpkConfigs = require('./webpack.build.config');
 const webpack = require('webpack');
 
-var version = require('./version');
+const version = require('./version');
 version.update();
 
-var outputDir  = config.outputDir;
+const outputDir = config.outputDir;
 wpkConfigs.forEach(function (wpkConfig) {
 
-    var plugins = wpkConfig.plugins;
-    var output = wpkConfig.output;
+    const plugins = wpkConfig.plugins;
+    const output = wpkConfig.output;
     output.path = path.resolve(outputDir,path.relative(srcDir,output.path));
 
 
