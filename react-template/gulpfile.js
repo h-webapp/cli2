@@ -84,6 +84,7 @@ function getFileContent(file){
 }
 function concatBlockItems(block) {
     let stream = gulp.src(block.items).pipe(extractContent(getFileContent));
+    stream = stream.pipe(concat(block.output.rel));
     let type = block.type;
     if(type === 'js'){
         stream = stream.pipe(babel({
@@ -103,7 +104,6 @@ function concatBlockItems(block) {
     stream = stream.on('error', function (err) {
         console.error(err);
     });
-    stream = stream.pipe(concat(block.output.rel));
     let distDir = parseDistDir(block.output.abs);
     stream = stream.pipe(gulp.dest(distDir));
     return stream;
