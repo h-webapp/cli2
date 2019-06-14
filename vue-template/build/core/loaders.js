@@ -168,7 +168,10 @@ function cssFileLoader(content,resources){
 
     const regexp = /\burl\s*\((["']?)\s*([^"'()]+\.[^"'()]+)\s*\1\s*\)/ig;
     const file = this.file;
-    content.replace(regexp, function (all,m1,src) {
+    const rootFile = this.root;
+    let cssDepItems = [];
+    let destDir = path.dirname(rootFile);
+    content.replace(regexp, function (all,m1,src,start) {
 
         if(isAbsoluteUrl(src)){
             return all;
@@ -180,7 +183,16 @@ function cssFileLoader(content,resources){
         resources.set(src,{
             type:'file'
         });
+        cssDepItems.push({
+            file:src,
+            dest:destDir,
+            start:start,
+            end:start + all.length
+        })
     });
+    if(cssDepItems.length){
+        resources.setCssDep(file,cssDepItems);
+    }
 }
 
 const parseLoaders = [

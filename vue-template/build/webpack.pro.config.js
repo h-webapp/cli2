@@ -23,17 +23,17 @@ wpkConfigs.forEach(function (wpkConfig) {
         'process.env.NODE_ENV': '"production"'
     }));
 
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        uglifyOptions: {
-            compress: {
-                warnings: false
-            }
-        },
-        sourceMap: config.sourceMap,
-        parallel: true
-    }));
-
-
+    if(config.minimize){
+        plugins.push(new webpack.optimize.UglifyJsPlugin({
+            uglifyOptions: {
+                compress: {
+                    warnings: false
+                }
+            },
+            sourceMap: config.sourceMap,
+            parallel: true
+        }));
+    }
 
 });
 

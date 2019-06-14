@@ -4,6 +4,7 @@ const _resources = new Map();
 let _resourcesRel = {};
 let concatItems = [];
 let processed = new Map();
+let cssDependencies = new Map();
 const resources = {
     set: function (key, value) {
         let count = _resourcesRel[key] || 1;
@@ -26,13 +27,19 @@ const resources = {
         return _resources.entries();
     },
     getResourceRel: function () {
-        return Object.assign({}, _resourcesRel);
+        return _resourcesRel;
     },
     getConcatItems: function () {
         return concatItems;
     },
     addConcatItem: function (concat) {
         concatItems.push(concat);
+    },
+    setCssDep:function (file,dep) {
+        return cssDependencies.set(file,dep);
+    },
+    getCssDep:function (file) {
+        return cssDependencies.get(file);
     }
 };
 let parseLoaders = require('./loaders');

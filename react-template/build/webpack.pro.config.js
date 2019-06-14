@@ -2,20 +2,20 @@ const path = require('path');
 const srcDirConfig = require('./util/SrcDir');
 srcDirConfig.setMode('release');
 const srcDir = srcDirConfig.get();
-const runtime = require('./runtime.pro');
+var runtime = require('./runtime.pro');
 
-const config = runtime.config;
-const wpkConfigs = require('./webpack.build.config');
+var config = runtime.config;
+var wpkConfigs = require('./webpack.build.config');
 const webpack = require('webpack');
 
-const version = require('./version');
+var version = require('./version');
 version.update();
 
-const outputDir = config.outputDir;
+var outputDir  = config.outputDir;
 wpkConfigs.forEach(function (wpkConfig) {
 
-    const plugins = wpkConfig.plugins;
-    const output = wpkConfig.output;
+    var plugins = wpkConfig.plugins;
+    var output = wpkConfig.output;
     output.path = path.resolve(outputDir,path.relative(srcDir,output.path));
 
 
@@ -23,17 +23,17 @@ wpkConfigs.forEach(function (wpkConfig) {
         'process.env.NODE_ENV': '"production"'
     }));
 
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        uglifyOptions: {
-            compress: {
-                warnings: false
-            }
-        },
-        sourceMap: config.sourceMap,
-        parallel: true
-    }));
-
-
+    if(config.minimize){
+        plugins.push(new webpack.optimize.UglifyJsPlugin({
+            uglifyOptions: {
+                compress: {
+                    warnings: false
+                }
+            },
+            sourceMap: config.sourceMap,
+            parallel: true
+        }));
+    }
 
 });
 
